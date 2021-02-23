@@ -19,12 +19,76 @@
 //
 typedef enum
 {
+	// OFTODO: there might be some econ weapons here and cut weapons, they are only for refrence
+	//			to make sure the other weapon ids are correct, remove them in the future! - cherry
+
     WEAPON_NONE = 0,
 
+	OF_WEAPON_BAT,
+	OF_WEAPON_BAT_WOOD, // this is the sandman, only putting it here for refrence, remove in the future!
+	OF_WEAPON_BOTTLE,
+	OF_WEAPON_FIREAXE,
+	OF_WEAPON_CLUB, // snipers kukri
+	OF_WEAPON_CROWBAR,
+	OF_WEAPON_KNIFE,
+	OF_WEAPON_FISTS,
+	OF_WEAPON_SHOVEL,
+	OF_WEAPON_WRENCH,
+	OF_WEAPON_BONESAW,
+	OF_WEAPON_SHOTGUN, // maybe rename to OF_WEAPON_SHOTGUN_PRIMARY for compatibility? - cherry
+	OF_WEAPON_SHOTGUN_SOLDIER,
+	OF_WEAPON_SHOTGUN_HWG,
+	OF_WEAPON_SHOTGUN_PYRO,
+	OF_WEAPON_SCATTERGUN,
+	OF_WEAPON_SNIPERRIFLE,
+	OF_WEAPON_MINIGUN,
 	OF_WEAPON_SMG,
-	OF_WEAPON_SHOTGUN,
-    WEAPON_OFTODO,
+	OF_WEAPON_SYRINGEGUN_MEDIC,
+	OF_WEAPON_TRANQ,
+	OF_WEAPON_ROCKETLAUNCHER,
+	OF_WEAPON_GRENADELAUNCHER,
+	OF_WEAPON_PIPEBOMBLAUNCHER,
+	OF_WEAPON_FLAMETHROWER,
 
+	// pretty sure these are just the cut grenades - cherry
+	OF_WEAPON_GRENADE_NORMAL,
+	OF_WEAPON_GRENADE_CONCUSSION,
+	OF_WEAPON_GRENADE_NAIL,
+	OF_WEAPON_GRENADE_MIRV,
+	OF_WEAPON_GRENADE_MIRV_DEMOMAN,
+	OF_WEAPON_GRENADE_NAPALM,
+	OF_WEAPON_GRENADE_GAS,
+	OF_WEAPON_GRENADE_EMP,
+	OF_WEAPON_GRENADE_CALTROP,
+	OF_WEAPON_GRENADE_PIPEBOMB,
+	OF_WEAPON_GRENADE_SMOKE_BOMB,
+	OF_WEAPON_GRENADE_HEAL,
+	OF_WEAPON_GRENADE_STUNBALL,
+
+	OF_WEAPON_GRENADE_JAR,
+	OF_WEAPON_GRENADE_JAR_MILK,
+
+	OF_WEAPON_PISTOL, // engineer pistol
+	OF_WEAPON_PISTOL_SCOUT,
+	OF_WEAPON_REVOLVER,
+	OF_WEAPON_NAILGUN,
+	OF_WEAPON_PDA,
+	OF_WEAPON_PDA_ENGINEER_BUILD,
+	OF_WEAPON_PDA_ENGINEER_DESTROY,
+	OF_WEAPON_PDA_SPY,
+	OF_WEAPON_BUILDER,
+	OF_WEAPON_MEDIGUN,
+	OF_WEAPON_GRENADE_MIRVBOMB,
+	OF_WEAPON_FLAMETHROWER_ROCKET,
+	OF_WEAPON_GRENADE_DEMOMAN,
+	OF_WEAPON_SENTRY_BULLET,
+	OF_WEAPON_SENTRY_ROCKET,
+	OF_WEAPON_DISPENSER,
+	OF_WEAPON_INVIS,
+
+	// everything after the above weapon is econ in ghidra - cherry
+
+    WEAPON_OFTODO,
     WEAPON_MAX,
 } OFWeaponID;
 
@@ -78,18 +142,16 @@ class COFWeaponBase: public CBaseCombatWeapon, IHasOwner /*, IHasGenericMeter */
     virtual void Activate() override;
 
     // CBaseEntity::
-    #ifdef CLIENT_DLL
     virtual void Precache() override;
-    #endif
     #ifdef GAME_DLL
     virtual void ChangeTeam(int iTeamNum) override;
-    #endif
-    // virtual void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value ) override;
-    // virtual void UpdateOnRemove() override;
+	virtual void Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value ) override { return; };
+	#endif
+    // virtual void UpdateOnRemove() override; // econ, ignore it - cherry
 	#ifdef GAME_DLL
     virtual CBaseEntity *Respawn () override;
 	#endif
-    // virtual int GetDamageType() override;
+    virtual int GetDamageType() const;
 
     // virtual void ReapplyProvision();
     // virtual Activity TranslateViewmodelHandActivityInternal(Activity);
@@ -105,7 +167,7 @@ class COFWeaponBase: public CBaseCombatWeapon, IHasOwner /*, IHasGenericMeter */
     virtual bool HasAmmo() override;
     // virtual bool SendWeaponAnim( int iActivity ) override;
     virtual bool CanHolster() const override;
-    // virtual void Deploy() override;
+    virtual bool Deploy() override;
     // virtual bool Holster( CBaseCombatWeapon *pSwitchingTo ) override;
     virtual void SetWeaponVisible( bool visible ) override;
     // virtual void OnActiveStateChanged( int iOldState ) override;
@@ -219,11 +281,11 @@ class COFWeaponBase: public CBaseCombatWeapon, IHasOwner /*, IHasGenericMeter */
     virtual bool GetCanAttackFlags() const { return false; };
     virtual void WeaponReset();
     // virtual void WeaponRegenerate();
-    // virtual const char *GetMuzzleFlashEffectName_3rd();
-    // virtual const char *GetMuzzleFlashEffectName_1st();
-    // virtual const char *GetMuzzleFlashModel();
-    // virtual float GetMuzzleFlashModelLifetime();
-    // virtual const char *GetMuzzleFlashParticleEffect();
+    virtual const char *GetMuzzleFlashEffectName_3rd();
+    virtual const char *GetMuzzleFlashEffectName_1st();
+    virtual const char *GetMuzzleFlashModel();
+    virtual float GetMuzzleFlashModelLifetime();
+    virtual const char *GetMuzzleFlashParticleEffect();
     // virtual const char *GetInventoryModel();
     virtual float GetSpeedMod();
     // virtual bool CanFireCriticalShot();
@@ -289,4 +351,5 @@ private:
     bool m_bCanDropWeapon;
 	char m_szTracerTypeName[128];
 	COFWeaponInfo *m_pWeaponInfo;
+	int field_0x6cc; // OFTODO: RENAME ME IN THE FUTURE!
 };

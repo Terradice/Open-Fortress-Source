@@ -23,11 +23,75 @@
 //--------------------------------------------------------------------------------------------------------
 static const char * s_WeaponAliasInfo[] = 
 {
-	"none",				// WEAPON_NONE
-	"tf_weapon_smg",	// OF_WEAPON_SMG
-	"tf_weapon_shotgun",// OF_WEAPON_SHOTGUN
-	NULL,				// WEAPON_OFTODO
-	NULL,				// WEAPON_MAX
+	// OFTODO: there might be some econ weapons here and cut weapons, they are only for refrence
+	//			to make sure the other weapon ids are correct, remove them in the future!
+
+	"none",								// WEAPON_NONE
+
+	"tf_weapon_bat",					// OF_WEAPON_BAT
+	"tf_weapon_bat_wood",				// OF_WEAPON_BAT_WOOD - this is the sandman, only putting it here for refrence, remove in the future! - cherry
+	"tf_weapon_fireaxe",				// OF_WEAPON_FIREAXE
+	"tf_weapon_club",					// OF_WEAPON_CLUB
+	"tf_weapon_crowbar",				// OF_WEAPON_CROWBAR
+	"tf_weapon_knife",					// OF_WEAPON_KNIFE
+	"tf_weapon_fists",					// OF_WEAPON_FISTS
+	"tf_weapon_shovel",					// OF_WEAPON_SHOVEL
+	"tf_weapon_wrench",					// OF_WEAPON_WRENCH
+	"tf_weapon_bonesaw",				// OF_WEAPON_BONESAW
+	"tf_weapon_shotgun",				// OF_WEAPON_SHOTGUN - maybe rename to tf_weapon_shotgun_primary for compatibility? - cherry
+	"tf_weapon_shotgun_soldier",		// OF_WEAPON_SHOTGUN_SOLDIER
+	"tf_weapon_shotgun_hwg",			// OF_WEAPON_SHOTGUN_HWG
+	"tf_weapon_shotgun_pyro",			// OF_WEAPON_SHOTGUN_PYRO
+	"tf_weapon_scattergun",				// OF_WEAPON_SCATTERGUN
+	"tf_weapon_sniperrifle",			// OF_WEAPON_SNIPERRIFLE
+	"tf_weapon_minigun",				// OF_WEAPON_MINIGUN
+	"tf_weapon_smg",					// OF_WEAPON_SMG
+	"tf_weapon_syringegun_medic",		// OF_WEAPON_SYRINGEGUN_MEDIC
+	"tf_weapon_tranq",					// OF_WEAPON_TRANQ
+	"tf_weapon_rocketlauncher",			// OF_WEAPON_ROCKETLAUNCHER
+	"tf_weapon_grenadelauncher",		// OF_WEAPON_GRENADELAUNCHER
+	"tf_weapon_pipebomblauncher",		// OF_WEAPON_PIPEBOMBLAUNCHER
+	"tf_weapon_flamethrower",			// OF_WEAPON_FLAMETHROWER
+
+	// pretty sure these are just the cut grenades - cherry
+	"tf_weapon_grenade_normal",			// OF_WEAPON_GRENADE_NORMAL
+	"tf_weapon_grenade_concussion",		// OF_WEAPON_GRENADE_CONCUSSION
+	"tf_weapon_grenade_nail",			// OF_WEAPON_GRENADE_NAIL
+	"tf_weapon_grenade_mirv",			// OF_WEAPON_GRENADE_MIRV
+	"tf_weapon_grenade_mirv_demoman",	// OF_WEAPON_GRENADE_MIRV_DEMOMAN
+	"tf_weapon_grenade_napalm",			// OF_WEAPON_GRENADE_NAPALM
+	"tf_weapon_grenade_gas",			// OF_WEAPON_GRENADE_GAS
+	"tf_weapon_grenade_emp",			// OF_WEAPON_GRENADE_EMP
+	"tf_weapon_grenade_caltrop",		// OF_WEAPON_GRENADE_CALTROP
+	"tf_weapon_grenade_pipebomb",		// OF_WEAPON_GRENADE_PIPEBOMB
+	"tf_weapon_grenade_smoke_bomb",		// OF_WEAPON_GRENADE_SMOKE_BOMB
+	"tf_weapon_grenade_heal",			// OF_WEAPON_GRENADE_HEAL
+	"tf_weapon_grenade_stunball",		// OF_WEAPON_GRENADE_STUNBALL
+
+	// econ
+	"tf_weapon_grenade_jar",			// OF_WEAPON_GRENADE_JAR
+	"tf_weapon_grenade_jar_milk",		// OF_WEAPON_GRENADE_JAR_MILK
+
+	"tf_weapon_pistol",					// OF_WEAPON_PISTOL
+	"tf_weapon_pistol_scout",			// OF_WEAPON_PISTOL_SCOUT
+	"tf_weapon_revolver",				// OF_WEAPON_REVOLVER
+	"tf_weapon_nailgun",				// OF_WEAPON_NAILGUN
+	"tf_weapon_pda",					// OF_WEAPON_PDA
+	"tf_weapon_pda_engineer_build",		// OF_WEAPON_PDA_ENGINEER_BUILD
+	"tf_weapon_pda_engineer_destroy",	// OF_WEAPON_PDA_ENGINEER_DESTROY
+	"tf_weapon_pda_spy",				// OF_WEAPON_PDA_SPY
+	"tf_weapon_builder",				// OF_WEAPON_BUILDER
+	"tf_weapon_medigun",				// OF_WEAPON_MEDIGUN
+	"tf_weapon_grenade_mirvbomb",		// OF_WEAPON_GRENADE_MIRVBOMB
+	"tf_weapon_flamethrower_rocket",	// OF_WEAPON_FLAMETHROWER_ROCKET
+	"tf_weapon_grenade_demoman",		// OF_WEAPON_GRENADE_DEMOMAN
+	"tf_weapon_sentry_bullet",			// OF_WEAPON_SENTRY_BULLET
+	"tf_weapon_sentry_rocket",			// OF_WEAPON_SENTRY_ROCKET
+	"tf_weapon_dispenser",				// OF_WEAPON_DISPENSER
+	"tf_weapon_invis",					// OF_WEAPON_INVIS
+
+	NULL,								// WEAPON_OFTODO
+	NULL,								// WEAPON_MAX
 };
 
 //--------------------------------------------------------------------------------------------------------
@@ -106,6 +170,7 @@ COFWeaponBase::COFWeaponBase()
 {
 	m_iWeaponMode = OF_WEAPON_MODE_PRIMARY;
 	m_flLastDeployTime = 0.0f;
+	field_0x6cc = 0;
 }
 
 #ifdef CLIENT_DLL
@@ -212,6 +277,37 @@ bool COFWeaponBase::CanHolster() const
     */
     return true;
     
+}
+
+//OFSTATUS: COMPLETE
+// bunch of econ and attrib stuff cut - cherry
+bool COFWeaponBase::Deploy()
+{
+	#ifdef GAME_DLL
+
+	COFPlayer *pPlayer = GetOFPlayerOwner();
+	if (pPlayer)
+	{
+		pPlayer->StartHintTimer(field_0x6cc);
+	}
+
+	#endif
+
+	m_iReloadStage.Set(OF_RELOAD_STAGE_NONE);
+
+	float _flNextPrimaryAttack = m_flNextPrimaryAttack;
+	float _flNextSecondaryAttack = m_flNextSecondaryAttack;
+
+	bool bDeploy = CBaseCombatWeapon::Deploy();
+
+	if (bDeploy)
+	{
+		m_flNextPrimaryAttack = max(_flNextPrimaryAttack, gpGlobals->curtime);
+		m_flNextSecondaryAttack = max(_flNextSecondaryAttack, gpGlobals->curtime);
+		m_flLastDeployTime = gpGlobals->curtime;
+	}
+
+	return bDeploy;
 }
 
 //OFSTATUS: INCOMPLETE
@@ -835,7 +931,8 @@ bool COFWeaponBase::CanPerformSecondaryAttack() const
 }
 
 //OFSTATUS: COMPLETE
-bool COFWeaponBase::HideAttachmentsAndShowBodygroupsWhenPerformingWeaponIndependentTaunt() const {
+bool COFWeaponBase::HideAttachmentsAndShowBodygroupsWhenPerformingWeaponIndependentTaunt() const
+{
     return true;
 }
 
@@ -1069,7 +1166,7 @@ COFPlayer *COFWeaponBase::GetOFPlayerOwner() const
 
 // OFSTATUS: INCOMPLETE
 // --------------------------------------
-// Econ stuff removed + "complete" but we still gotta figure out where to define convar tf_useparticletracers and that weapon at the bottom - cherry
+// Econ stuff removed + "complete" but we still gotta figure out where to define convar tf_useparticletracers - cherry
 // --------------------------------------
 const char *COFWeaponBase::GetTracerType()
 {
@@ -1095,13 +1192,10 @@ const char *COFWeaponBase::GetTracerType()
 		}
     }
 
-    // previous: uVar1 = GetWeaponID();
-    // previous: if (CONCAT31(extraout_var_00, uVar1) == 0x12)
-	// some weapon but we dont know which - cherry
-	//if (GetWeaponID() == extraout_var_00)
-    //{
-    //    return "BrightTracer";
-    //}
+	if (GetWeaponID() == OF_WEAPON_MINIGUN)
+    {
+        return "BrightTracer";
+    }
 
 	// trimmed - cherry
     return NULL;
@@ -1112,14 +1206,12 @@ void COFWeaponBase::Spawn()
 {
 	CBaseCombatWeapon::Spawn();
 	CBaseEntity::SetCollisionGroup(COLLISION_GROUP_WEAPON);
-	COFWeaponInfo *pWeaponInfo;
 	FileWeaponInfo_t *pFileWeaponInfo = GetFileWeaponInfoFromHandle( LookupWeaponInfoSlot(CBaseEntity::GetClassname()) );
 	if (pFileWeaponInfo)
 	{
-		pWeaponInfo = dynamic_cast<COFWeaponInfo*>(pFileWeaponInfo);
+		COFWeaponInfo *pWeaponInfo = dynamic_cast<COFWeaponInfo*>(pFileWeaponInfo);
+		m_pWeaponInfo = pWeaponInfo;
 	}
-
-	m_pWeaponInfo = pWeaponInfo;
 
 	if (CBaseCombatWeapon::GetOwner())
 	{
@@ -1136,153 +1228,76 @@ void COFWeaponBase::Spawn()
 	m_szTracerTypeName[0] = '\0';
 }
 
-#ifdef CLIENT_DLL
-//OFSTATUS: INCOMPLETE
+// OFSTATUS: COMPLETE
+// econ parts trimmed - cherry
 void COFWeaponBase::Precache()
 {
-    /*
-    int *piVar1;
-    int *piVar2;
-    ushort *puVar3;
-    IFileSystem *pIVar4;
-    char cVar5;
-    int iVar6;
-    char *pcVar7;
-    uchar *puVar8;
-    CAmmoDef *pCVar9;
-    undefined4 uVar10;
-    int iVar11;
+	BaseClass::Precache();
 
-    piVar1 = (int *)(this + 0xa84);
-    piVar2 = (int *)(this + 0xa88);
-    if (*(int *)(this + 0xa88) == -1)
-    {
-        iVar6 = *piVar2;
-    }
-    else
-    {
-        *piVar2 = -1;
-        iVar6 = -1;
-    }
-    if (*piVar1 != iVar6)
-    {
-        *piVar1 = iVar6;
-    }
-    pIVar4 = *(IFileSystem **)PTR__filesystem_00f8a194;
-    pcVar7 = (char *)C_BaseEntity::GetClassname((C_BaseEntity *)this);
-    puVar3 = (ushort *)(this + 0xabe);
-    puVar8 = (uchar *)(**(code **)(*(int *)this + 0x64c))(this);
-    cVar5 = ReadWeaponDataFromFileForSlot(pIVar4, pcVar7, puVar3, puVar8);
-    if (cVar5 == '\0')
-    {
-        uVar10 = C_BaseEntity::GetClassname((C_BaseEntity *)this);
-        __symbol_stub::_Warning("Error reading weapon data file for: %s\n", uVar10);
-    }
-    else
-    {
-        iVar6 = GetFileWeaponInfoFromHandle(*puVar3);
-        if (*(char *)(iVar6 + 0x180) != '\0')
-        {
-            pCVar9 = (CAmmoDef *)GetAmmoDef();
-            iVar6 = GetFileWeaponInfoFromHandle(*puVar3);
-            iVar6 = CAmmoDef::Index(pCVar9, (char *)(iVar6 + 0x180));
-            if (*piVar1 == iVar6)
-            {
-                iVar6 = *piVar1;
-            }
-            else
-            {
-                *piVar1 = iVar6;
-            }
-            if (iVar6 == -1)
-            {
-                uVar10 = C_BaseEntity::GetClassname((C_BaseEntity *)this);
-                iVar6 = GetFileWeaponInfoFromHandle(*(ushort *)(this + 0xabe));
-                __symbol_stub::_Msg("ERROR: Weapon (%s) using undefined primary ammo type (%s)\n", uVar10,
-                                    iVar6 + 0x180);
-            }
-            iVar6 = CAttributeManager::AttribHookValue<int>(0, "mod_use_metal_ammo_type", (C_BaseEntity *)this, (CUtlVector *)0x0, true);
-            if ((iVar6 != 0) && (*piVar1 != 3))
-            {
-                *piVar1 = 3;
-            }
-        }
-        iVar6 = GetFileWeaponInfoFromHandle(*puVar3);
-        if (*(char *)(iVar6 + 0x1a0) != '\0')
-        {
-            pCVar9 = (CAmmoDef *)GetAmmoDef();
-            iVar6 = GetFileWeaponInfoFromHandle(*puVar3);
-            iVar6 = CAmmoDef::Index(pCVar9, (char *)(iVar6 + 0x1a0));
-            if (*piVar2 == iVar6)
-            {
-                iVar6 = *piVar2;
-            }
-            else
-            {
-                *piVar2 = iVar6;
-            }
-            if (iVar6 == -1)
-            {
-                uVar10 = C_BaseEntity::GetClassname((C_BaseEntity *)this);
-                iVar6 = GetFileWeaponInfoFromHandle(*(ushort *)(this + 0xabe));
-                __symbol_stub::_Msg("ERROR: Weapon (%s) using undefined secondary ammo type (%s)\n", uVar10,
-                                    iVar6 + 0x1a0);
-            }
-        }
-        WeaponsResource::LoadWeaponSprites((WeaponsResource *)PTR__gWR_00f8a1c8, *(ushort *)(this + 0xabe));
-        piVar1 = (int *)(this + 0xa58);
-        if (*(int *)(this + 0xa58) != 0)
-        {
-            *piVar1 = 0;
-        }
-        piVar2 = (int *)(this + 0xa5c);
-        if (*(int *)(this + 0xa5c) != 0)
-        {
-            *piVar2 = 0;
-        }
-        iVar6 = (**(code **)(*(int *)this + 0x5fc))(this, 0);
-        if (iVar6 != 0)
-        {
-            pcVar7 = (char *)(**(code **)(*(int *)this + 0x5fc))(this, 0);
-            if (*pcVar7 != '\0')
-            {
-                pcVar7 = (char *)(**(code **)(*(int *)this + 0x5fc))(this, 0);
-                iVar6 = C_BaseEntity::PrecacheModel(pcVar7);
-                if (*piVar1 != iVar6)
-                {
-                    *piVar1 = iVar6;
-                }
-            }
-        }
-        iVar6 = (**(code **)(*(int *)this + 0x600))(this);
-        iVar11 = 0;
-        if (iVar6 != 0)
-        {
-            pcVar7 = (char *)(**(code **)(*(int *)this + 0x600))(this);
-            if (*pcVar7 != '\0')
-            {
-                pcVar7 = (char *)(**(code **)(*(int *)this + 0x600))(this);
-                iVar6 = C_BaseEntity::PrecacheModel(pcVar7);
-                if (*piVar2 != iVar6)
-                {
-                    *piVar2 = iVar6;
-                }
-            }
-        }
-        do
-        {
-            pcVar7 = (char *)(**(code **)(*(int *)this + 0x63c))(this, iVar11);
-            if ((pcVar7 != (char *)0x0) && (*pcVar7 != '\0'))
-            {
-                C_BaseEntity::PrecacheScriptSound(pcVar7);
-            }
-            iVar11 = iVar11 + 1;
-        } while (iVar11 != 0x10);
-    }
-    return;
-    */
+	if (COFWeaponBase::GetMuzzleFlashModel())
+	{
+		CBaseEntity::PrecacheModel(COFWeaponBase::GetMuzzleFlashModel());
+	}
+
+	//COFWeaponInfo weaponInfo = COFWeaponBase::GetOFWpnData();
+
+	//if (*(char *)(iVar5 + 0x991) != '\0')
+	if (COFWeaponBase::GetOFWpnData().m_szExplosionSound)
+	{
+		//CBaseEntity::PrecacheScriptSound((char *)(iVar5 + 0x991));
+		CBaseEntity::PrecacheScriptSound(COFWeaponBase::GetOFWpnData().m_szExplosionSound);
+	}
+
+	//if (*(char *)(iVar5 + 0x911) != '\0')
+	if (COFWeaponBase::GetOFWpnData().m_szBrassModel)
+	{
+		//CBaseEntity::PrecacheModel((char *)(iVar5 + 0x911));
+		CBaseEntity::PrecacheModel(COFWeaponBase::GetOFWpnData().m_szBrassModel);
+	}
+
+	//uVar2 = (COFWeaponBase::GetMuzzleFlashParticleEffect);
+	if (COFWeaponBase::GetMuzzleFlashParticleEffect())
+	{
+		//uVar2 = (COFWeaponBase::GetMuzzleFlashParticleEffect);
+		PrecacheParticleSystem(COFWeaponBase::GetMuzzleFlashParticleEffect());
+	}
+
+	//if (*(char *)(iVar5 + 0xa11) != '\0')
+	if (COFWeaponBase::GetOFWpnData().m_szExplosionEffect)
+	{
+		//PrecacheParticleSystem((char *)(iVar5 + 0xa11));
+		PrecacheParticleSystem(COFWeaponBase::GetOFWpnData().m_szExplosionEffect);
+	}
+
+	//if (*(char *)(iVar5 + 0xa91) != '\0')
+	if (COFWeaponBase::GetOFWpnData().m_szExplosionEffectPlayer)
+	{
+		//PrecacheParticleSystem((char *)(iVar5 + 0xa91));
+		PrecacheParticleSystem(COFWeaponBase::GetOFWpnData().m_szExplosionEffectPlayer);
+	}
+
+	//if (*(char *)(iVar5 + 0xb11) != '\0')
+	if (COFWeaponBase::GetOFWpnData().m_szExplosionEffectWater)
+	{
+		//PrecacheParticleSystem((char *)(iVar5 + 0xb11));
+		PrecacheParticleSystem(COFWeaponBase::GetOFWpnData().m_szExplosionEffectWater);
+	}
+
+	if (COFWeaponBase::GetOFWpnData().m_szTracerParticle)
+	{
+		char szTracerparticle[128];
+		char szTracerparticleCrit[128];
+
+		V_snprintf(szTracerparticle, sizeof(szTracerparticle), "%s_red", COFWeaponBase::GetOFWpnData().m_szTracerParticle);
+		V_snprintf(szTracerparticleCrit, sizeof(szTracerparticleCrit), "%s_red_crit", COFWeaponBase::GetOFWpnData().m_szTracerParticle);
+		PrecacheParticleSystem(szTracerparticle);
+		PrecacheParticleSystem(szTracerparticleCrit);
+		V_snprintf(szTracerparticle, sizeof(szTracerparticle), "%s_blue", COFWeaponBase::GetOFWpnData().m_szTracerParticle);
+		V_snprintf(szTracerparticleCrit, sizeof(szTracerparticleCrit), "%s_blue_crit", COFWeaponBase::GetOFWpnData().m_szTracerParticle);
+		PrecacheParticleSystem(szTracerparticle);
+		PrecacheParticleSystem(szTracerparticleCrit);
+	}
 }
-#endif
 
 //OFSTATUS: COMPLETE
 void COFWeaponBase::Activate()
@@ -1291,212 +1306,38 @@ void COFWeaponBase::Activate()
     this->GiveDefaultAmmo();
 }
 
-//OFSTATUS: INCOMPLETE
+//OFSTATUS: COMPLETE
+// huge econ trim - cherry
 void COFWeaponBase::Equip( CBaseCombatCharacter *pOwner )
 {
-#ifdef GAME_DLL
-    /*
-    ushort uVar1;
-    ushort uVar2;
-    uint *this_00;
-    ushort *puVar3;
-    int *piVar4;
-    code *pcVar5;
-    undefined uVar6;
-    char cVar7;
-    undefined3 extraout_var;
-    int iVar8;
-    ushort *puVar9;
-    uint uVar10;
-    uint uVar11;
-    undefined4 uVar12;
-    char *pcVar13;
-    uint uVar14;
-    CEconItemView *this_01;
-    uint local_24;
-
-    CBaseCombatWeapon::SetOwner((CBaseCombatWeapon *)this, param_1);
-    (*this->vtable->CBaseEntity::SetOwnerEntity)((CBaseEntity *)this, (CBaseEntity *)param_1);
-    (*this->vtable->CTFWeaponBase::ReapplyProvision)(this);
-    CBaseCombatWeapon::Equip((CBaseCombatWeapon *)this, param_1);
-    (*this->vtable->CTFWeaponBase::UpdateHands)(this);
-    uVar6 = (*this->vtable->CEconEntity::GetAttributeContainer)((CEconEntity *)this);
-    if (*(char *)(CONCAT31(extraout_var, uVar6) + 0xb0) == '\0')
-    {
-        return;
-    }
-    this_01 = (CEconItemView *)(CONCAT31(extraout_var, uVar6) + 0x5c);
-    iVar8 = CEconItemView::GetStaticData(this_01);
-    cVar7 = *(char *)(iVar8 + 0x9a);
-    if (*(char *)&this->field_0x61c == cVar7)
-        goto LAB_0036c286;
-    if (*(char *)&this->field_0x5c == '\0')
-    {
-        this_00 = (uint *)this->field_0x20;
-        if ((this_00 != (uint *)0x0) && ((*this_00 & 0x100) == 0))
-        {
-            *this_00 = *this_00 | 1;
-            puVar9 = (ushort *)CBaseEdict::GetChangeAccessor((CBaseEdict *)this_00);
-            puVar3 = *(ushort **)PTR__g_pSharedChangeInfo_00e34128;
-            uVar1 = *puVar3;
-            if (puVar9[1] == uVar1)
-            {
-                uVar10 = (uint)*puVar9;
-                uVar14 = (uint)puVar3[uVar10 * 0x14 + 0x14];
-                local_24 = 0;
-                if (uVar14 != 0)
-                {
-                    uVar11 = 0;
-                    do
-                    {
-                        if (puVar3[uVar10 * 0x14 + uVar11 + 1] == 0x61c)
-                            goto LAB_0036c27d;
-                        uVar11 = uVar11 + 1;
-                    } while (uVar11 < uVar14);
-                    local_24 = uVar14;
-                    if (uVar14 == 0x13)
-                    {
-                        puVar9[1] = 0;
-                        goto LAB_0036c21b;
-                    }
-                }
-                puVar3[uVar10 * 0x14 + 0x14] = (short)local_24 + 1;
-                puVar3[uVar10 * 0x14 + local_24 + 1] = 0x61c;
-            }
-            else
-            {
-                uVar2 = puVar3[0x7d1];
-                uVar10 = (uint)uVar2;
-                if (uVar10 == 100)
-                {
-                    puVar9[1] = 0;
-                LAB_0036c21b:
-                    *(CBaseEdict *)((int)this_00 + 1) =
-                        (CBaseEdict)((byte) * (CBaseEdict *)((int)this_00 + 1) | 1);
-                }
-                else
-                {
-                    *puVar9 = uVar2;
-                    puVar3[0x7d1] = uVar2 + 1;
-                    puVar9[1] = uVar1;
-                    puVar3[uVar10 * 0x14 + 1] = 0x61c;
-                    puVar3[uVar10 * 0x14 + 0x14] = 1;
-                }
-            }
-        }
-    }
-    else
-    {
-        *(byte *)&this->field_0x60 = *(byte *)&this->field_0x60 | 1;
-    }
-LAB_0036c27d:
-    *(char *)&this->field_0x61c = cVar7;
-LAB_0036c286:
-    iVar8 = CEconItemView::GetVisionFilteredDisplayModel(this_01);
-    if (iVar8 != 0)
-    {
-        piVar4 = *(int **)PTR__modelinfo_00e341bc;
-        pcVar5 = *(code **)(*piVar4 + 0xc);
-        uVar12 = CEconItemView::GetVisionFilteredDisplayModel(this_01);
-        iVar8 = (*pcVar5)(piVar4, uVar12);
-        if (iVar8 == -1)
-        {
-            pcVar13 = (char *)CEconItemView::GetVisionFilteredDisplayModel(this_01);
-            CBaseEntity::PrecacheModel(pcVar13, true);
-        }
-    }
-    (*this->vtable->CTFWeaponBase::UpdateExtraWearables)(this);
-    if ((param_1 != (CBaseCombatCharacter *)0x0) &&
-        (cVar7 = (**(code **)(*(int *)param_1 + 0x144))(param_1), cVar7 != '\0'))
-    {
-        CTFPlayer::ReapplyItemUpgrades((CTFPlayer *)param_1, this_01);
-    }
-    */
-#else
-    /*
-    int *piVar1;
-    code *pcVar2;
-    undefined uVar3;
-    undefined3 extraout_var;
-    int iVar4;
-    undefined4 uVar5;
-    char *pcVar6;
-    C_EconItemView *this_00;
-
-    C_BaseCombatWeapon::SetOwner((C_BaseCombatWeapon *)this, param_1);
-    C_BaseEntity::SetOwnerEntity((C_BaseEntity *)this, (C_BaseEntity *)param_1);
-    (*this->vtable->C_TFWeaponBase::ReapplyProvision)(this);
-    C_BaseCombatWeapon::Equip((C_BaseCombatWeapon *)this, param_1);
-    (*this->vtable->C_TFWeaponBase::UpdateHands)(this);
-    uVar3 = (*this->vtable->C_EconEntity::GetAttributeContainer)((C_EconEntity *)this);
-    if (*(char *)(CONCAT31(extraout_var, uVar3) + 0xfc) != '\0')
-    {
-        this_00 = (C_EconItemView *)(CONCAT31(extraout_var, uVar3) + 0x60);
-        iVar4 = C_EconItemView::GetStaticData(this_00);
-        if (*(char *)&this->field_0xabc != *(char *)(iVar4 + 0x9a))
-        {
-            *(char *)&this->field_0xabc = *(char *)(iVar4 + 0x9a);
-        }
-        iVar4 = C_EconItemView::GetVisionFilteredDisplayModel(this_00);
-        if (iVar4 != 0)
-        {
-            piVar1 = *(int **)PTR__modelinfo_00f8a1ec;
-            pcVar2 = *(code **)(*piVar1 + 0xc);
-            uVar5 = C_EconItemView::GetVisionFilteredDisplayModel(this_00);
-            iVar4 = (*pcVar2)(piVar1, uVar5);
-            if (iVar4 == -1)
-            {
-                pcVar6 = (char *)C_EconItemView::GetVisionFilteredDisplayModel(this_00);
-                C_BaseEntity::PrecacheModel(pcVar6);
-            }
-        }
-    }
-    */
-#endif
+	CBaseCombatWeapon::SetOwner(pOwner);
+	CBaseEntity::SetOwnerEntity(pOwner);
+	CBaseCombatWeapon::Equip(pOwner);
 }
 
-//OFSTATUS: INCOMPLETE
+//OFSTATUS: COMPLETE
+// trimmed - cherry
 void COFWeaponBase::Drop( const Vector &vecVelocity )
 {
-    /* Slightly RE'd but I needs help :/ -Bryson
-
-    int iVar1;
-    int *piVar2;
-    int iVar3;
-    CHintSystem *this_00;
-
-    if (m_bCanDropWeapon != 0)
+	#ifdef GAME_DLL
+	if (field_0x6cc != 0)
     {
-        iVar1 = this->GetOwner();
-        if (iVar1 != 0)
+        if ( CBaseCombatWeapon::GetOwner() )
         {
-            piVar2 = (int *)__symbol_stub::___dynamic_cast(iVar1, PTR_typeinfo_00e34140, PTR_typeinfo_00e34088, 0);
-            if (piVar2 != (int *)0x0)
+			COFPlayer *pOFPlayer = GetOFPlayerOwner();
+			if (pOFPlayer)
             {
-                iVar1 = m_bCanDropWeapon;
-                iVar3 = (**(code **)(*piVar2 + 0x6d0))(piVar2);
-                if (iVar3 != 0)
-                {
-                    this_00 = (CHintSystem *)(**(code **)(*piVar2 + 0x6d0))(piVar2);
-                    CHintSystem::StopHintTimer(this_00, iVar1);
-                }
+				pOFPlayer->StopHintTimer(field_0x6cc);
             }
         }
     }
-    this->Drop(vecVelocity);
-    (*this->vtable->CTFWeaponBase::ReapplyProvision)(this);
-    (*this->vtable->CTFWeaponBase::RemoveExtraWearables)(this);
-    this->UTIL_Remove();
-    */
+	#endif
 
-    /* Ghidra fucky wucky for client :3
-    C_BaseCombatWeapon::Drop((Vector *)this);
-    (*this->vtable->C_TFWeaponBase::ReapplyProvision)(this);
-    // WARNING: Could not recover jumptable at 0x00365e01. Too many branches
-    // WARNING: Treating indirect jump as call
-    (*this->vtable->C_TFWeaponBase::RemoveExtraWearables)();
-    return;
-    */
+    CBaseCombatWeapon::Drop(vecVelocity);
+
+	#ifdef GAME_DLL
+	UTIL_Remove(this);
+	#endif
 }
 
 #ifdef GAME_DLL
@@ -1630,6 +1471,56 @@ CBaseEntity *COFWeaponBase::Respawn()
 	return pWeapon;
 }
 #endif
+
+//OFSTATUS: COMPLETE
+int COFWeaponBase::GetDamageType() const
+{
+	return g_aWeaponDamageTypes[ GetWeaponID() ];
+}
+
+//OFSTATUS: COMPLETE
+const char *COFWeaponBase::GetMuzzleFlashEffectName_3rd()
+{
+	return NULL;
+}
+
+//OFSTATUS: COMPLETE
+const char *COFWeaponBase::GetMuzzleFlashEffectName_1st()
+{
+	return NULL;
+}
+
+//OFSTATUS: COMPLETE
+const char *COFWeaponBase::GetMuzzleFlashModel()
+{
+	const char *pMuzzleFlashModel = GetOFWpnData().m_szMuzzleFlashModel;
+
+	// we'll use V_ from now on as the Q_ are quake leftovers (thank you int for pointing this out) - cherry
+	if (0 < V_strlen(pMuzzleFlashModel))
+	{
+		return pMuzzleFlashModel;
+	}
+	return NULL;
+}
+
+//OFSTATUS: COMPLETE
+float COFWeaponBase::GetMuzzleFlashModelLifetime()
+{
+	return GetOFWpnData().m_flMuzzleFlashModelDuration;
+}
+
+//OFSTATUS: COMPLETE
+// econ parts cut - cherry
+const char *COFWeaponBase::GetMuzzleFlashParticleEffect()
+{
+	const char *pMuzzleFlashParticleEffect = GetOFWpnData().m_szMuzzleFlashParticle;
+
+	if (0 < V_strlen(pMuzzleFlashParticleEffect))
+	{
+		return pMuzzleFlashParticleEffect;
+	}
+	return NULL;
+}
 
 //OFSTATUS: INCOMPLETE
 Vector COFWeaponBase::GetParticleColor(int iColor)

@@ -249,6 +249,7 @@ enum
 };
 
 extern const char *g_aWeaponModePrefix[OF_WEAPON_MODE_COUNT];
+extern uint g_aWeaponDamageTypes[];
 extern const char *g_aProjectileTypeNames[OF_PROJECTILE_TYPE_COUNT];
 
 // Needs to match the array below
