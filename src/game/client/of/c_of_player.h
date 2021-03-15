@@ -7,6 +7,7 @@
 
 #include "c_baseplayer.h"
 #include "of_playeranimstate.h"
+#include "of_player_shared.h"
 
 class C_OFWeaponBase;
 
@@ -37,6 +38,11 @@ public:
 						   
 public:
 	COFPlayerAnimState *m_PlayerAnimState;
+
+	COFPlayerShared m_Shared;
+	friend class COFPlayerShared;
+
+	virtual float GetCritMult() { return m_Shared.GetCritMult(); };
 };
 
 inline C_OFPlayer *ToOFPlayer( C_BaseEntity *pEntity )

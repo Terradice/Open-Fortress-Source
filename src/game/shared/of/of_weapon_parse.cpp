@@ -28,7 +28,7 @@ void COFWeaponInfo::Parse( KeyValues *pKeyValuesData, const char *szWeaponName )
 	// example of how this would be accessed pWeapon->GetTFWeapon()->m_WeaponModeInfo[m_iWeaponType].m_something
 	for( int i = 0; i < OF_WEAPON_MODE_COUNT; i++ )
 	{
-		TempStructName_t WeaponInfo_t;
+		WeaponInfoStruct_t WeaponInfo_t;
 		m_WeaponModeInfo.AddToTail(WeaponInfo_t);
 		const char *szPrefix = g_aWeaponModePrefix[i];
 

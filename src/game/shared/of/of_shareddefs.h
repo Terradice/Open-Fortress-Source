@@ -249,6 +249,7 @@ enum
 };
 
 extern const char *g_aWeaponModePrefix[OF_WEAPON_MODE_COUNT];
+extern uint g_aWeaponDamageTypes[];
 extern const char *g_aProjectileTypeNames[OF_PROJECTILE_TYPE_COUNT];
 
 // Needs to match the array below
@@ -264,5 +265,13 @@ extern const char *g_aTeamNames[OF_TEAM_COUNT];
 extern const char* s_ValveMaps[][3];
 extern const char* s_CommunityMaps[][3];
 
+// maybe rename to OF_ ? - cherry
+// nevermind! compatibility
+
 #define TF_DAMAGE_CRIT_MULTIPLIER	3
 #define TF_GAMETYPE_ESCORT			3
+
+#define TF_WEAPON_RANDOM_RANGE				1000.0f
+#define TF_WEAPON_CRIT_CHANCE_NORMAL		0.02f
+#define TF_WEAPON_CRIT_CHANCE_RAPID			0.02f
+#define TF_WEAPON_CRIT_DURATION				2.0f

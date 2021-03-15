@@ -33,7 +33,9 @@ $Project
 			$File	"$SHARED/of/of_weapon_base_gun.h"
 			$File	"$SHARED/of/of_weapon_smg.cpp"
 			$File	"$SHARED/of/of_weapon_smg.h"
-
+			$File	"$SHARED/of/of_player_shared.cpp"
+			$File	"$SHARED/of/of_player_shared.h"
+			
 			$File	"$SHARED/of/of_usermessages.cpp"
 		}
 	}

@@ -13,6 +13,7 @@
 #include "basemultiplayerplayer.h"
 #include "dbg.h"
 #include "of_playeranimstate.h"
+#include "of_player_shared.h"
 
 class COFWeaponBase;
 
@@ -88,6 +89,11 @@ public:
 	// Tracks our ragdoll entity.
 	CNetworkHandle( CBaseEntity, m_hRagdoll );	// networked entity handle 	
 	
+	CNetworkVarEmbedded(COFPlayerShared, m_Shared);
+	friend class COFPlayerShared;
+
+	virtual float GetCritMult() { return m_Shared.GetCritMult(); };
+
 private:
 	COFPlayerAnimState *m_PlayerAnimState;
 	OFPlayerState	m_iPlayerState;

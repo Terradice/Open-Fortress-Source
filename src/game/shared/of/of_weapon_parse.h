@@ -8,8 +8,7 @@
 #include "weapon_parse.h"
 #include "networkvar.h"
 
-// OFTODO: Give this a more fitting name - Kay
-struct TempStructName_t
+struct WeaponInfoStruct_t
 {
 	int m_iDamage;
 	float m_flRange;
@@ -47,7 +46,7 @@ public:
 	virtual void Parse( KeyValues *pKeyValuesData, const char *szWeaponName );
 
 	// Should probably add a Function here to get these instead of directly accessing this
-	CUtlVector<TempStructName_t> m_WeaponModeInfo;
+	CUtlVector<WeaponInfoStruct_t> m_WeaponModeInfo;
 	
 	char m_szAnimExtension[16];		// string used to generate player animations with this weapon
 

@@ -152,7 +152,7 @@ void COFGameRules::CreateStandardEntities( void )
 void COFGameRules::Think( void )
 {
 #ifndef CLIENT_DLL	
-	BaseClass::Think();
+	//BaseClass::Think();
 #endif
 }
 

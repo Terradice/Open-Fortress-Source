@@ -4,11 +4,15 @@
 //
 #pragma once
 
-#include "gamerules.h"
-#include "teamplay_gamerules.h"
+//#include "gamerules.h"
+#include "teamplayroundbased_gamerules.h"
+//#include "GameEventListener.h"
+//#include "teamplay_gamerules.h"
 #include "gamevars_shared.h"
 
-#ifndef CLIENT_DLL
+#ifdef CLIENT_DLL
+#include "c_of_player.h"
+#else
 #include "of_player.h"
 #endif
 
@@ -23,17 +27,17 @@ class COFTeam;
 
 #define HUD_ALERT_SCRAMBLE_TEAMS	0
 
-class COFGameRulesProxy : public CGameRulesProxy
+class COFGameRulesProxy : public CTeamplayRoundBasedRulesProxy
 {
 public:
-	DECLARE_CLASS( COFGameRulesProxy, CGameRulesProxy );
+	DECLARE_CLASS( COFGameRulesProxy, CTeamplayRoundBasedRulesProxy );
 	DECLARE_NETWORKCLASS();
 };
 
-class COFGameRules : public CTeamplayRules
+class COFGameRules : public CTeamplayRoundBasedRules
 {
 public:
-	DECLARE_CLASS( COFGameRules, CTeamplayRules );
+	DECLARE_CLASS( COFGameRules, CTeamplayRoundBasedRules );
 
 	 // This makes datatables able to access our private vars
 	DECLARE_NETWORKCLASS_NOBASE();
