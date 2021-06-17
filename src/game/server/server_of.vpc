@@ -37,29 +37,25 @@ $Project "Server (Open Fortress)"
 		$File	"team_train_watcher.h"
 		$File	"trigger_area_capture.cpp"
 		$File	"trigger_area_capture.h"
-		
 		$File	"of/of_client.cpp"
 		$File	"of/of_player.cpp"
 		$File	"of/of_gameinterface.cpp"
 		$File	"of/of_playermove.cpp"
 		$File	"of/of_eventlog.cpp"
-
 		$File	"of/of_bot_temp.h"
 		$File	"of/of_bot_temp.cpp"
 		$File	"of/of_team.h"
 		$File	"of/of_team.cpp"
-
 		$File	"of/entity_ofstart.cpp"
 		$File	"of/entity_ofstart.h"
-
 		$File	"of/te_firebullets.cpp"
 		$File	"of/te_firebullets.h"
-		
 		$File	"of/of_capturezone.cpp"
 		$File	"of/of_capturezone.h"
-		
 		$File	"of/of_objectiveresource.cpp"
 		$File	"of/of_objectiveresource.h"
+		$File	"of/of_powerup.cpp"
+		$File	"of/of_powerup.h"
 		
 		// NOPEY: They're located in shared, but aren't in our client. dunno why
 		$File	"$SRCDIR/game/shared/teamplayroundbased_gamerules.cpp"

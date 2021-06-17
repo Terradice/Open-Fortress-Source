@@ -275,6 +275,13 @@ enum ETFCond
 	TF_COND_LAST
 };
 
+enum EOFPowerupSize
+{
+	OF_POWERUP_SMALL = 0,
+	OF_POWERUP_MEDIUM,
+	OF_POWERUP_FULL
+};
+
 enum
 {
 	OF_FLAGSTATUS_NONE = 0,

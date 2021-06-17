@@ -101,6 +101,7 @@ public:
 	virtual const char *GetStalemateSong(int nTeam);
 	virtual void SetHudType(int iHudType);
 	virtual void SetOvertimeAllowedForCTF(bool bAllow) { m_bOvertimeAllowedForCTF = bAllow; }
+	virtual float FlItemRespawnTime() { return 10.0; } // param_1 goes unused
 #endif
 	virtual int GetFarthestOwnedControlPoint(int iTeam, bool param_2);
 	virtual bool TeamMayCapturePoint(int iTeam, int iPointIndex);
