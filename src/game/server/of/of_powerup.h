@@ -15,21 +15,21 @@ public:
 
 	COFPowerup();
 
-	void Spawn();
-	void Precache();
-	void SetDisabled(bool bDisable);
-	void Materialize();
-	void Materialize_Internal();
-	CBaseEntity *Respawn();
-	bool ValidTouch(CBasePlayer *pPlayer);
-	bool MyTouch(CBasePlayer *pPlayer);
-	void DropSingleInstance(Vector &pVelocity, CBaseCombatCharacter *pOwner, float param_3, float param_4);
-	bool ItemCanBeTouchedByPlayer(CBasePlayer *pPlayer);
-	float GetLifeTime() { return 30.0; } // sandvich life time
-	float GetRespawnDelay();
-	EOFPowerupSize GetPowerupSize() { return OF_POWERUP_FULL; }
-	const char *GetPowerupModel();
-	const char *GetDefaultPowerupModel() { return "error.mdl"; }
+	virtual void Spawn();
+	virtual void Precache();
+	virtual void SetDisabled(bool bDisable);
+	virtual void Materialize();
+	virtual void Materialize_Internal();
+	virtual CBaseEntity *Respawn();
+	virtual bool ValidTouch(CBasePlayer *pPlayer);
+	virtual bool MyTouch(CBasePlayer *pPlayer);
+	virtual void DropSingleInstance(Vector &pVelocity, CBaseCombatCharacter *pOwner, float param_3, float param_4);
+	virtual bool ItemCanBeTouchedByPlayer(CBasePlayer *pPlayer);
+	virtual float GetLifeTime() { return 30.0; } // sandvich life time
+	virtual float GetRespawnDelay();
+	virtual EOFPowerupSize GetPowerupSize() { return OF_POWERUP_FULL; }
+	virtual const char *GetPowerupModel();
+	virtual const char *GetDefaultPowerupModel() { return "error.mdl"; }
 
 	void InputEnable(inputdata_t &inputdata) { m_bDisabled = false; }
 	void InputDisable(inputdata_t &inputdata) { m_bDisabled = true; }

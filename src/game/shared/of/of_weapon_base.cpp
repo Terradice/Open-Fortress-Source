@@ -186,7 +186,7 @@ ConVar tf_weapon_criticals( "tf_weapon_criticals", "1", FCVAR_NOTIFY | FCVAR_REP
 COFWeaponBase::COFWeaponBase()
 {
 	SetPredictionEligible(true);
-	SetSolidFlags(FSOLID_TRIGGER);
+	AddSolidFlags(FSOLID_TRIGGER);
 
 	m_bLoweredWeapon = false;
 	m_iWeaponMode = OF_WEAPON_MODE_PRIMARY;
@@ -197,12 +197,6 @@ COFWeaponBase::COFWeaponBase()
 	m_iLastCritCheck = 0;
 	m_bAttackCritical = false;
 	m_bWeaponReset = false;
-}
-
-//OFSTATUS: COMPLETE
-COFWeaponBase::~COFWeaponBase()
-{
-	CBaseCombatWeapon::~CBaseCombatWeapon();
 }
 
 //OFSTATUS: COMPLETE

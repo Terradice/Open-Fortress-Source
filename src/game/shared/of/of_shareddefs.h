@@ -37,6 +37,19 @@ enum OF_Collision_Group_t
 #define Shared_VarArgs UTIL_VarArgs
 #endif
 
+// maybe rename to OF_ ? - cherry
+// nevermind! compatibility
+
+#define TF_DAMAGE_CRIT_MULTIPLIER	3
+#define TF_WEAPON_RANDOM_RANGE				1000.0f
+#define TF_WEAPON_CRIT_CHANCE_NORMAL		0.02f
+#define TF_WEAPON_CRIT_CHANCE_RAPID			0.02f
+#define TF_WEAPON_CRIT_DURATION				2.0f
+
+#define OF_PLAYER_WEAPON_COUNT 6
+#define OF_PLAYER_GRENADE_COUNT 6
+#define OF_PLAYER_BUILDABLE_COUNT 6
+
 enum OFPlayerState
 {
 	TF_STATE_ACTIVE,
@@ -71,6 +84,18 @@ enum
 	OF_WEAPON_TYPE_PDA,
 	OF_WEAPON_TYPE_ITEM1,
 	OF_WEAPON_TYPE_ITEM2
+};
+
+enum
+{
+	OF_AMMO_DUMMY,
+	OF_AMMO_PRIMARY,
+	OF_AMMO_SECONDARY,
+	OF_AMMO_METAL,
+	OF_AMMO_GRENADES1,
+	OF_AMMO_GRENADES2,
+	OF_AMMO_GRENADES3,
+	OF_AMMO_COUNT
 };
 
 // These values are approximate and gotten via limited testing
@@ -349,19 +374,18 @@ extern const char *g_aWeaponModePrefix[OF_WEAPON_MODE_COUNT];
 extern uint g_aWeaponDamageTypes[];
 extern const char *g_aProjectileTypeNames[OF_PROJECTILE_TYPE_COUNT];
 
-// Needs to match the array below
-#define AMMONAME_FIRST 1
-#define AMMONAME_LAST 7
-
 //OFHACK: g_aAmmoNames should probably be an extern + defined somewhere but isn't
 // (oh well, just bloats the exe a bit)
 
 // No longer the case, did it properly and moved it to of_shareddefs.cpp now - Kay
-extern const char *g_aAmmoNames[AMMONAME_LAST];
+extern const char *g_aAmmoNames[OF_AMMO_COUNT];
 
 // Team Defines
 extern const char *g_aTeamNames[OF_TEAM_COUNT];
 extern color32 g_aTeamColors[];
+
+// health/ammo defines
+extern float PackRatios[];
 
 // Class Defines
 extern const char *g_aRawPlayerClassNamesShort[];
@@ -369,13 +393,3 @@ extern const char *g_aRawPlayerClassNamesShort[];
 // Map Defines
 extern const char* s_ValveMaps[][3];
 extern const char* s_CommunityMaps[][3];
-
-// maybe rename to OF_ ? - cherry
-// nevermind! compatibility
-
-#define TF_DAMAGE_CRIT_MULTIPLIER	3
-
-#define TF_WEAPON_RANDOM_RANGE				1000.0f
-#define TF_WEAPON_CRIT_CHANCE_NORMAL		0.02f
-#define TF_WEAPON_CRIT_CHANCE_RAPID			0.02f
-#define TF_WEAPON_CRIT_DURATION				2.0f

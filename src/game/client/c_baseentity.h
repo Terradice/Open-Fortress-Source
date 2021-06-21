@@ -1334,7 +1334,7 @@ public:
 	// Object model index
 	short							m_nModelIndex;
 
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	int								m_nModelIndexOverrides[MAX_VISION_MODES];
 #endif
 
@@ -1691,7 +1691,7 @@ protected:
 	CThreadFastMutex m_CalcAbsolutePositionMutex;
 	CThreadFastMutex m_CalcAbsoluteVelocityMutex;
 
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	// TF prevents drawing of any entity attached to players that aren't items in the inventory of the player.
 	// This is to prevent servers creating fake cosmetic items and attaching them to players.
 public:

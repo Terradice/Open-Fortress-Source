@@ -15,14 +15,14 @@ struct  OFPlayerClassData_t
 	float			m_flMaxSpeed;
 	int				m_iMaxHealth;
 	int				m_iMaxArmor;
-	int				m_iWeaponIDs[6];
+	int				m_iWeaponIDs[OF_PLAYER_WEAPON_COUNT];
 
 	// RE NOTE: Grenades only have 2 confirmed array size
 	// The latter 4 bytes are only assumed to be part of it
 	// They might be something entirely different
-	int				m_iGrenades[6];
-	int				m_iMaxAmmo[AMMONAME_LAST];
-	int				m_iBuildable[6];
+	int				m_iGrenades[OF_PLAYER_GRENADE_COUNT];
+	int				m_iMaxAmmo[OF_AMMO_COUNT];
+	int				m_iBuildable[OF_PLAYER_BUILDABLE_COUNT];
 	bool			m_bDontDoAirwalk;
 	bool			m_bDontDoNewJump;
 	bool			m_bIsParsed;
@@ -86,6 +86,8 @@ public:
 
 	const char	*GetModelName( void );
 	const char	*GetHandModelName( bool bUseGunslinger );
+
+	OFPlayerClassData_t *GetClassData() { return GetPlayerClassData(m_iClass); }
 
 protected:
 

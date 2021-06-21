@@ -178,6 +178,8 @@ void COFPlayer::Spawn()
     SetMoveType( MOVETYPE_WALK );
     BaseClass::Spawn();
     //end line 286 CTFPlayer::Spawn
+	CreateViewModel(1);
+	GetViewModel(1)->SetModel("");
     RemoveSolidFlags( FSOLID_NOT_SOLID );
     m_hRagdoll = NULL;
 
@@ -231,12 +233,55 @@ void COFPlayer::InitClass()
 	m_PlayerAnimState->SetRunSpeed( GetPlayerClassData(m_Class.m_iClass)->m_flMaxSpeed );
 	m_PlayerAnimState->SetWalkSpeed( GetPlayerClassData(m_Class.m_iClass)->m_flMaxSpeed * 0.5 );
 
-	// GiveDefaultItems();
+	GiveDefaultItems();
 
 	SetMaxHealth( GetMaxHealth() );
 	SetHealth( GetMaxHealth() );
 
 	// TeamFortress_SetSpeed();
+}
+
+void COFPlayer::GiveDefaultItems()
+{
+	OFPlayerClassData_t *pClassData = GetPlayerClassData(m_Class.m_iClass);
+	
+	//if (GetTeamNumber() == TEAM_SPECTATOR)
+	//{
+		RemoveAllWeapons();
+		RemoveAllAmmo();
+		//return;
+	//}
+
+	for (int i = 0; i < OF_AMMO_COUNT; i++)
+	{
+		GiveAmmo(pClassData->m_iMaxAmmo[i], i, true);
+	}
+
+	ManageRegularWeapons(pClassData);
+
+	if (!OFGameRules()->IsPlayingMedievalMode())
+	{
+		//ManageBuilderWeapons(pClassData);
+	}
+
+	//m_Shared.RemoveCond(TF_COND_SELECTED_TO_TELEPORT);
+	// there's a bunch of other conditions but are for econ weapons
+}
+
+// this is FILLED with econ, steamid checks, and who knows what else.
+// makes sense since, item servers, so im doing this manually - cherry
+void COFPlayer::ManageRegularWeapons(OFPlayerClassData_t *pClassData)
+{
+	for (int i = 0; i < OF_PLAYER_WEAPON_COUNT; i++)
+	{
+		int iWeaponID = pClassData->m_iWeaponIDs[i];
+		if (iWeaponID != WEAPON_NONE)
+		{
+			const char *pszWeaponName = WeaponIDToAlias(iWeaponID);
+			GiveNamedItem(pszWeaponName);
+		}
+	}
+
 }
 
 int COFPlayer::GetMaxHealth()
@@ -1035,6 +1080,25 @@ void COFPlayer::CommitSuicide(bool bExplode, bool bForce)
 	//this->field_0xb94 = 6;
 
 	BaseClass::CommitSuicide(bExplode, bForce);
+}
+
+// OFSTATUS: COMPLETE
+void COFPlayer::RemoveAllWeapons()
+{
+	ClearActiveWeapon();
+	for (int i = 0; i < MAX_WEAPONS; i++)
+	{
+		CBaseCombatWeapon *pWeapon = m_hMyWeapons[i];
+		if (pWeapon)
+		{
+			Weapon_Detach(pWeapon);
+			UTIL_Remove(pWeapon);
+		}
+	}
+
+	//m_Shared.RemoveDisguiseWeapon(); // OFTODO: UNCOMMENT ME LATER!
+
+	// field_0xde0 leads to lots of econ stuff - ignore!
 }
 
 //OFSTATUS: INCOMPLETE

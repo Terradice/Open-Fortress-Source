@@ -160,7 +160,6 @@ class COFWeaponBase : public CBaseCombatWeapon, IHasOwner, public CGameEventList
     //OFTODO: Compare COFWeaponBase members to client.dylib CTFWeaponBase
 
     COFWeaponBase();
-    ~COFWeaponBase();
 
     // CBaseEntity::
     virtual const char *GetTracerType() override;

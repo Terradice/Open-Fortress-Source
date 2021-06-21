@@ -932,7 +932,7 @@ enum
 	kActivityLookup_Missing = -1,			// has been searched for but wasn't found
 };
 
-#if defined(TF_DLL) || defined(TF_CLIENT_DLL) || defined(OF_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
 //-----------------------------------------------------------------------------
 // Vision Filters.
 //-----------------------------------------------------------------------------

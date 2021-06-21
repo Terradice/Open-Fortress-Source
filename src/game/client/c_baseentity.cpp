@@ -473,7 +473,7 @@ BEGIN_RECV_TABLE_NOBASE(C_BaseEntity, DT_BaseEntity)
 	RecvPropInt		( RECVINFO( m_bAnimatedEveryTick ), 0, RecvProxy_InterpolationAmountChanged ),
 	RecvPropBool	( RECVINFO( m_bAlternateSorting ) ),
 
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	RecvPropArray3( RECVINFO_ARRAY(m_nModelIndexOverrides),	RecvPropInt( RECVINFO(m_nModelIndexOverrides[0]) ) ),
 #endif
 
@@ -960,7 +960,7 @@ C_BaseEntity::C_BaseEntity() :
 	m_bRecordInTools = true;
 #endif
 
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	m_bValidatedOwner = false;
 	m_bDeemedInvalid = false;
 	m_bWasDeemedInvalid = false;
@@ -1342,7 +1342,7 @@ void C_BaseEntity::GetVectors(Vector* pForward, Vector* pRight, Vector* pUp) con
 
 void C_BaseEntity::UpdateVisibility()
 {
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	// TF prevents drawing of any entity attached to players that aren't items in the inventory of the player.
 	// This is to prevent servers creating fake cosmetic items and attaching them to players.
 	if ( !engine->IsPlayingDemo() )
@@ -2374,7 +2374,7 @@ void C_BaseEntity::HierarchySetParent( C_BaseEntity *pNewParent )
 
 	InvalidatePhysicsRecursive( POSITION_CHANGED | ANGLES_CHANGED | VELOCITY_CHANGED );
 
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	m_bValidatedOwner = false;
 #endif
 }
@@ -2465,7 +2465,7 @@ void C_BaseEntity::UnlinkFromHierarchy()
 //-----------------------------------------------------------------------------
 void C_BaseEntity::ValidateModelIndex( void )
 {
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	if ( IsLocalPlayerUsingVisionFilterFlags( TF_VISION_FILTER_HALLOWEEN ) )
 	{
 		if ( m_nModelIndexOverrides[VISION_MODE_HALLOWEEN] > 0 )
@@ -2904,7 +2904,7 @@ bool C_BaseEntity::Interpolate( float currentTime )
 
 CStudioHdr *C_BaseEntity::OnNewModel()
 {
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 	m_bValidatedOwner = false;
 #endif
 
@@ -6284,7 +6284,7 @@ void C_BaseEntity::RemoveFromTeleportList()
 	}
 }
 
-#if defined(TF_CLIENT_DLL) || defined(OF_CLIENT_DLL)
+#if defined(TF_CLIENT_DLL)
 bool C_BaseEntity::ValidateEntityAttachedToPlayer( bool &bShouldRetry )
 {
 	bShouldRetry = false;
@@ -6337,7 +6337,7 @@ bool C_BaseEntity::ValidateEntityAttachedToPlayer( bool &bShouldRetry )
 	// This prevents them creating some other entity to pretend to be a cosmetic item.
 	return !pParent->IsPlayer();
 }
-#endif // TF_CLIENT_DLL || OF_CLIENT_DLL
+#endif // TF_CLIENT_DLL
 
 
 void C_BaseEntity::AddVar( void *data, IInterpolatedVar *watcher, int type, bool bSetup )

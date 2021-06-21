@@ -120,7 +120,8 @@ public:
 	virtual void TeamPlayerCountChanged(COFTeam *pTeam);
 #endif
 
-	virtual bool IsPlayingSpecialDeliveryMode( void );
+	virtual bool IsPlayingSpecialDeliveryMode();
+	virtual bool IsPlayingMedievalMode() { return m_bPlayingMedieval; }
 	virtual int GetTimeLeft();
 
 private:

@@ -45,7 +45,7 @@ void OFPlayerClassData_t::ParseData( KeyValues *kvData )
 	KeyValues *kvAmmoMax = kvData->FindKey( "AmmoMax" );
 	if( kvAmmoMax )
 	{
-		for( int i = 1; i < AMMONAME_LAST; i++ )
+		for (int i = 1; i < OF_AMMO_COUNT; i++)
 		{
 			m_iMaxAmmo[i] = kvAmmoMax->GetInt( GetAmmoName(i) );
 		}

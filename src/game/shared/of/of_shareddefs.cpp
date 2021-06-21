@@ -117,7 +117,7 @@ const char *g_aProjectileTypeNames[] =
 	"projectile_jar_gas",
 };
 
-const char *g_aAmmoNames[AMMONAME_LAST] =
+const char *g_aAmmoNames[OF_AMMO_COUNT] =
 {
 	"DUMMY AMMO", // This ammo is skipped
 	"TF_AMMO_PRIMARY",
@@ -142,6 +142,13 @@ color32 g_aTeamColors[] =
 	{ 0, 0, 0, 0 },
 	{ 255, 0, 0, 0 },
 	{ 0, 0, 255, 0 },
+};
+
+float PackRatios[] =
+{
+	0.2,
+	0.5,
+	1.0
 };
 
 const char* g_aRawPlayerClassNamesShort[] =

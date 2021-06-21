@@ -15,7 +15,8 @@ class COFItem;
 class COFWeaponBase;
 class COFTeam;
 
-class COFPlayer : public CBaseMultiplayerPlayer {
+class COFPlayer : public CBaseMultiplayerPlayer
+{
 public:
 	DECLARE_CLASS( COFPlayer, CBaseMultiplayerPlayer );
 	DECLARE_DATADESC();
@@ -94,6 +95,9 @@ public:
 	COFTeam *GetOFTeam() { return (COFTeam*)(GetTeam()); };
 	int GetAutoTeam();
 	void CommitSuicide(bool bExplode, bool bForce);
+	void GiveDefaultItems();
+	void ManageRegularWeapons(OFPlayerClassData_t *pClassData);
+	void RemoveAllWeapons();
 
 private:
 

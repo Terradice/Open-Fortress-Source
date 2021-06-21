@@ -48,7 +48,7 @@ void COFPowerup::Spawn()
 	//	m_bDisabled = true;
 	//	AddEffects(EF_NODRAW);
 	//}
-	SetDisabled(true);
+	if (m_bDisabled) SetDisabled(true);
 
 	// (field_0x4ec + 1) = 0;
 	m_bRespawning = false;

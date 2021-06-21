@@ -1429,13 +1429,13 @@ CAmmoDef *GetAmmoDef()
 	{
 		bInitted = true;
 	
-		int iAmmoIndex = AMMONAME_FIRST;
+		int iAmmoIndex = OF_AMMO_PRIMARY;
 		do
 		{
 			def.AddAmmoType( g_aAmmoNames[iAmmoIndex], DMG_BULLET | DMG_NOCLOSEDISTANCEMOD | DMG_USEDISTANCEMOD, 1,	0, 0, ammo_max.GetInt(), 2400.0, 10, 14, 8 );
 			iAmmoIndex++;
 		}
-		while ( iAmmoIndex != AMMONAME_LAST );
+		while (iAmmoIndex != OF_AMMO_COUNT);
 	}
 
 	return &def;
