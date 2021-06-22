@@ -277,8 +277,7 @@ void COFWeaponBaseGun::PlayWeaponShootSound()
 	WeaponSound_t iSound = SINGLE;
 
 	// Check if the current attack is a critical, and if so, play the burst ( crit ) sound
-	// OFTODO: Replace this with a variable or function that checks if we're critting
-	if( false )
+	if (IsAttackCritical())
 		iSound = BURST;
 	
 	WeaponSound(iSound);

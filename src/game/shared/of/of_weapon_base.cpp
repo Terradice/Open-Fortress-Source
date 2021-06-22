@@ -767,9 +767,9 @@ void COFWeaponBase::ItemBusyFrame()
 
 				if (allowAbortReload)
 				{
-					COFWeaponBase::AbortReload();
-					m_bInReload = 0;
-					m_flNextSecondaryAttack.Set(gpGlobals->curtime);
+					AbortReload();
+					m_bInReload = false;
+					pPlayer->m_flNextAttack = gpGlobals->curtime;
 					m_flNextPrimaryAttack = Max(gpGlobals->curtime, (float)m_flOldPrimaryAttack);
 					CBaseCombatWeapon::SetWeaponIdleTime(gpGlobals->curtime + GetOFWpnData().m_WeaponModeInfo[m_iWeaponMode].m_flTimeIdle);
 				}

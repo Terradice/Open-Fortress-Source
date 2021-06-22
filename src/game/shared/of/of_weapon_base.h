@@ -276,6 +276,7 @@ class COFWeaponBase : public CBaseCombatWeapon, IHasOwner, public CGameEventList
     virtual void CalcIsAttackCritical();
     virtual void FireFullClipAtOnce(){ return; };
     virtual bool CalcIsAttackCriticalHelper();
+	virtual bool IsAttackCritical() { return m_bAttackCritical; }
     //virtual bool CalcIsAttackCriticalHelperNoCrits();
     //virtual int GetPenetrateType();
     // some of these could be references. (Any that aren't null checked, make into refs.)
