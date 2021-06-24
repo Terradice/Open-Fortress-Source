@@ -27,21 +27,23 @@ public:
 
 	bool ShouldAutoReload(){ return false; };
 
-	virtual void FireBullet( 
-						   Vector vecSrc,	// shooting postion
-						   const QAngle &shootAngles,  //shooting angle
-						   float vecSpread, // spread vector
-						   int iDamage, // base damage
-						   int iBulletType, // ammo type
-						   CBaseEntity *pevAttacker, // shooter
-						   bool bDoEffects,	// create impact effect ?
-						   float x,	// spread x factor
-						   float y	// spread y factor
-						   );
+	static C_OFPlayer* GetLocalOFPlayer();
+	const QAngle &C_OFPlayer::EyeAngles();
+
+	virtual void FireBullet(
+		Vector vecSrc,	// shooting postion
+		const QAngle &shootAngles,  //shooting angle
+		float vecSpread, // spread vector
+		int iDamage, // base damage
+		int iBulletType, // ammo type
+		CBaseEntity *pevAttacker, // shooter
+		bool bDoEffects,	// create impact effect ?
+		float x,	// spread x factor
+		float y	// spread y factor
+		);
 	void OnPreDataChanged(DataUpdateType_t updateType);
 	void OnDataChanged(DataUpdateType_t updateType);
-
-	static C_OFPlayer* GetLocalOFPlayer();
+	void UpdateClientSideAnimation();
 
 	COFPlayerAnimState *m_PlayerAnimState;
 
@@ -58,6 +60,8 @@ public:
 private:
 	CNetworkHandle(COFItem, m_hItem);
 	int m_iPreDataChangeTeam;
+	QAngle m_angEyeAngles;
+	CInterpolatedVar< QAngle > m_iv_angEyeAngles;
 };
 
 inline C_OFPlayer *ToOFPlayer( C_BaseEntity *pEntity )

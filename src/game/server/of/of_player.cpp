@@ -9,6 +9,7 @@
 #include "cbase.h"
 #include "of_shareddefs.h"
 #include "of_player.h"
+#include "datacache/imdlcache.h"
 #include "of_player_shared.h"
 #include "of_playeranimstate.h"
 #include "tier0/vprof.h"
@@ -65,18 +66,73 @@ void TE_PlayerAnimEvent( CBasePlayer *pPlayer, PlayerAnimEvent_t event, int nDat
 
 // implementation of COFPlayer begin
 
+int SendProxyArrayLength_PlayerObjects(const void *pStruct, int objectID)
+{
+	//COFPlayer *pPlayer = (COFPlayer*)pStruct;
+	//return pPlayer->GetObjectCount();
+
+	// REMOVE LATER
+	return 0;
+}
+
+void SendProxy_PlayerObjectList(const SendProp *pProp, const void *pStruct, const void *pData, DVariant *pOut, int iElement, int objectID)
+{
+	// OFTODO: work on objects! (ex: sentrys)
+	//COFPlayer *pPlayer = (COFPlayer*)pStruct;
+
+	//CBaseObject *pObject = pPlayer->GetObject();
+
+	//EHandle hObject = pObject;
+
+	//SendProxy_EHandleToInt(pProp, pStruct, &hObject, pOut, iElement, objectID);
+}
+
+void *SendProxy_SendNonLocalDataTable(const SendProp *pProp, const void *pStruct, const void *pVarData, CSendProxyRecipients *pRecipients, int objectID)
+{
+	pRecipients->SetAllRecipients();
+	pRecipients->ClearRecipient(objectID - 1);
+	return (void *)pVarData;
+}
+REGISTER_SEND_PROXY_NON_MODIFIED_POINTER(SendProxy_SendNonLocalDataTable);
+
 LINK_ENTITY_TO_CLASS( player, COFPlayer );
 
-IMPLEMENT_SERVERCLASS_ST( COFPlayer, DT_OF_Player )
-	SendPropDataTable( SENDINFO_DT( m_Class ), &REFERENCE_SEND_TABLE( DT_OFPlayerClassShared ) ),
+// Local Exclusive
+BEGIN_SEND_TABLE_NOBASE(COFPlayer, DT_OFLocalPlayerExclusive)
+	// for some reason the origin is split in SendPropVectorXY and SendPropFloat ??? thats dumb so here's a vector instead
+	SendPropVector( SENDINFO(m_vecOrigin), -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0, HIGH_DEFAULT, SendProxy_Origin ),
+	//SendPropArray2(
+	//SendProxyArrayLength_PlayerObjects,
+	//SendPropInt("player_object_array_element", 0, -1, NUM_NETWORKED_EHANDLE_BITS, SPROP_UNSIGNED, SendProxy_PlayerObjectList), 6, 0, ""),
+	SendPropFloat(SENDINFO_VECTORELEM(m_angEyeAngles, 0), 8, SPROP_CHANGES_OFTEN, -90.0, 90.0),
+	SendPropAngle(SENDINFO_VECTORELEM(m_angEyeAngles, 1), 10, SPROP_CHANGES_OFTEN),
+END_SEND_TABLE()
+
+// Non Local Exclusive
+BEGIN_SEND_TABLE_NOBASE(COFPlayer, DT_OFNonLocalPlayerExclusive)
+	// for some reason the origin is split in SendPropVectorXY and SendPropFloat ??? thats dumb so here's a vector instead
+	SendPropVector(SENDINFO(m_vecOrigin), -1, SPROP_COORD_MP_LOWPRECISION | SPROP_CHANGES_OFTEN, 0.0, HIGH_DEFAULT, SendProxy_Origin),
+	SendPropFloat(SENDINFO_VECTORELEM(m_angEyeAngles, 0), 8, SPROP_CHANGES_OFTEN, -90.0, 90.0),
+	SendPropAngle(SENDINFO_VECTORELEM(m_angEyeAngles, 1), 10, SPROP_CHANGES_OFTEN),
+END_SEND_TABLE()
+
+IMPLEMENT_SERVERCLASS_ST(COFPlayer, DT_OF_Player)
+	SendPropDataTable(SENDINFO_DT(m_Class), &REFERENCE_SEND_TABLE(DT_OFPlayerClassShared)),
+	SendPropDataTable("oflocaldata", 0, &REFERENCE_SEND_TABLE(DT_OFLocalPlayerExclusive), SendProxy_SendLocalDataTable),
+	SendPropDataTable("ofnonlocaldata", 0, &REFERENCE_SEND_TABLE(DT_OFNonLocalPlayerExclusive), SendProxy_SendNonLocalDataTable),
 END_SEND_TABLE()
 
 BEGIN_DATADESC( COFPlayer )
 END_DATADESC()
 
-COFPlayer::COFPlayer() : BaseClass()
+COFPlayer::COFPlayer()
 {
 	m_PlayerAnimState = CreatePlayerAnimState(this);
+
+	SetArmorValue(10);
+
+	UseClientSideAnimation();
+
 	m_bFlipViewModel = false;
 }
 
@@ -215,6 +271,27 @@ void COFPlayer::Spawn()
 
 		DoAnimationEvent(PLAYERANIMEVENT_SPAWN);
 	}
+}
+
+void COFPlayer::PostThink()
+{
+	BaseClass::PostThink();
+
+	QAngle angle = GetLocalAngles();
+	angle[PITCH] = 0;
+	SetLocalAngles(angle);
+
+	m_angEyeAngles = EyeAngles();
+	m_PlayerAnimState->Update(m_angEyeAngles[YAW], m_angEyeAngles[PITCH]);
+
+	// this is where it handles those taunt kills as DoTauntAttack is huge
+	if (m_fTauntKillTime && m_fTauntKillTime < gpGlobals->curtime)
+	{
+		m_fTauntKillTime = 0; // field_0x1fa4
+		//DoTauntAttack();
+	}
+
+	// coaching, mvm, and halloween past here - ignore!
 }
 
 //OFSTATUS: Incomplete, placeholder
@@ -519,6 +596,7 @@ int COFPlayer::GetMaxHealthForBuffing()
 
 void COFPlayer::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 {
+	MDLCACHE_CRITICAL_SECTION();
 	m_PlayerAnimState->DoAnimationEvent( event, nData );
 	TE_PlayerAnimEvent( this, event, nData );	// Send to any clients who can see this guy.
 }

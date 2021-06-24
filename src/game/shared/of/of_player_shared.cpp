@@ -16,6 +16,17 @@
 	#include "of_player.h"
 #endif
 
+// Data Tables
+#ifdef CLIENT_DLL
+
+BEGIN_PREDICTION_DATA_NO_BASE(COFPlayerShared)
+	DEFINE_PRED_FIELD(m_nPlayerState, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
+END_PREDICTION_DATA()
+
+#else
+
+#endif
+
 //OFSTATUS: INCOMPLETE
 COFPlayerShared::COFPlayerShared()
 {

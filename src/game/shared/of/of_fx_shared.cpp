@@ -145,7 +145,6 @@ void FX_FireBullets(
 	COFWeaponInfo *pWeaponInfo = static_cast< COFWeaponInfo* >( GetFileWeaponInfoFromHandle( hWpnInfo ) );
 
 #ifdef CLIENT_DLL
-/*
 	// Handled by FireProjectile
 	// Do the firing animation event.
 	if ( pPlayer && !pPlayer->IsDormant() )
@@ -162,7 +161,6 @@ void FX_FireBullets(
 			break;
 		}		
 	}
-	*/
 #else
 	// if this is server code, send the effect over to client as temp entity
 	// Dispatch one message for all the bullet impacts and sounds.

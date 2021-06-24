@@ -511,8 +511,7 @@ bool COFWeaponBase::ReloadSingly()
 			{
 				iAnimEvent = PLAYERANIMEVENT_RELOAD_LOOP;
 			}
-//			This still crashes for some reason
-//			pPlayer->DoAnimationEvent( iAnimEvent );
+			pPlayer->DoAnimationEvent( iAnimEvent );
 
 			m_bAnimReload = false;
 
@@ -584,8 +583,7 @@ bool COFWeaponBase::ReloadSingly()
 		{
 			SendWeaponAnim( ACT_RELOAD_FINISH );
 			SetWeaponIdleTime( gpGlobals->curtime + SequenceDuration() );
-//			This still crashes for some reason
-//			pPlayer->DoAnimationEvent(PLAYERANIMEVENT_RELOAD_END);
+			pPlayer->DoAnimationEvent(PLAYERANIMEVENT_RELOAD_END);
 			m_iReloadStage.Set( OF_RELOAD_STAGE_NONE );	
 			return true;
 		}
@@ -1486,8 +1484,7 @@ bool COFWeaponBase::DefaultReload(int iClipSize1, int iClipSize2, int iActivity)
 	WeaponSound(RELOAD);
 #endif
 
-	// OFTODO: this will crash the game apparently, figure out why!
-	//pPlayer->DoAnimationEvent(PLAYERANIMEVENT_RELOAD, 0);
+	pPlayer->DoAnimationEvent(PLAYERANIMEVENT_RELOAD, 0);
 
 	if (SendWeaponAnim(iActivity))
 	{

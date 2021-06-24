@@ -24,7 +24,7 @@ public:
 	COFPlayerAnimState();
 	COFPlayerAnimState(CBasePlayer *pPlayer, MultiPlayerMovementData_t &movementData);
 
-	void Init(COFPlayer *pPlayer);
+	void InitOF(COFPlayer *pPlayer);
 	void Update(float eyeYaw, float eyePitch);
 	void DoAnimationEvent( PlayerAnimEvent_t event, int nData = 0 ); // This is called by both the client and the server in the same way to trigger events for players
 	Activity TranslateActivity(Activity actDesired);

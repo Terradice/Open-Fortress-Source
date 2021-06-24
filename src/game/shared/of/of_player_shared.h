@@ -26,6 +26,7 @@ public:
 #ifdef CLIENT_DLL
 	friend class C_OFPlayer;
 	typedef C_OFPlayer OuterClass;
+	DECLARE_PREDICTABLE();
 #else
 	friend class COFPlayer;
 	typedef COFPlayer OuterClass;

@@ -13,6 +13,8 @@
 #include "of_weapon_base.h"
 #include "functionproxy.h"
 #include "voice_status.h"
+#include "prediction.h"
+#include "tier0/vprof.h"
 
 // Don't alias here
 // Why not? -Nopey
@@ -76,6 +78,8 @@ public:
 
 	virtual void PostDataUpdate( DataUpdateType_t updateType )
 	{
+		VPROF("C_TEPlayerAnimEvent::PostDataUpdate");
+
 		// Create the effect.
 		C_OFPlayer *pPlayer = dynamic_cast< C_OFPlayer* >( m_hPlayer.Get() );
 		if ( pPlayer && !pPlayer->IsDormant() )
@@ -97,24 +101,45 @@ BEGIN_RECV_TABLE_NOBASE( C_TEPlayerAnimEvent, DT_TEPlayerAnimEvent )
 	RecvPropInt( RECVINFO( m_nData ) )
 END_RECV_TABLE()
 
-LINK_ENTITY_TO_CLASS( player, C_OFPlayer );
+// Local Exclusive
+BEGIN_RECV_TABLE_NOBASE(C_OFPlayer, DT_OFLocalPlayerExclusive)
+	RecvPropVector( RECVINFO_NAME( m_vecNetworkOrigin, m_vecOrigin) ),
+	//SendPropArray2(
+	//
+	//
+	RecvPropFloat( RECVINFO(m_angEyeAngles[0]) ),
+	RecvPropFloat( RECVINFO(m_angEyeAngles[1]) ),
+END_RECV_TABLE()
 
-IMPLEMENT_CLIENTCLASS_DT( C_OFPlayer, DT_OF_Player, COFPlayer )
-	RecvPropDataTable( RECVINFO_DT( m_Class ), 0, &REFERENCE_RECV_TABLE( DT_OFPlayerClassShared ) ),
+// Non Local Exclusive
+BEGIN_RECV_TABLE_NOBASE(C_OFPlayer, DT_OFNonLocalPlayerExclusive)
+	RecvPropVector( RECVINFO_NAME(m_vecNetworkOrigin, m_vecOrigin) ),
+	RecvPropFloat( RECVINFO(m_angEyeAngles[0]) ),
+	RecvPropFloat( RECVINFO(m_angEyeAngles[1]) ),
+END_RECV_TABLE()
+
+IMPLEMENT_CLIENTCLASS_DT(C_OFPlayer, DT_OF_Player, COFPlayer)
+	RecvPropDataTable(RECVINFO_DT(m_Class), 0, &REFERENCE_RECV_TABLE(DT_OFPlayerClassShared)),
+	RecvPropDataTable("oflocaldata", 0, 0, &REFERENCE_RECV_TABLE(DT_OFLocalPlayerExclusive)),
+	RecvPropDataTable("ofnonlocaldata", 0, 0, &REFERENCE_RECV_TABLE(DT_OFNonLocalPlayerExclusive)),
 END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA( C_OFPlayer )
+	DEFINE_PRED_TYPEDESCRIPTION(m_Shared, COFPlayerShared),
 END_PREDICTION_DATA()
 
-C_OFPlayer::C_OFPlayer() : BaseClass()
+C_OFPlayer::C_OFPlayer() : m_iv_angEyeAngles("C_OFPlayer::m_iv_angEyeAngles")
 {
 	m_PlayerAnimState = CreatePlayerAnimState( this );
-	return;
+	AddVar(&m_angEyeAngles, &m_iv_angEyeAngles, LATCH_SIMULATION_VAR);
 }
 
 void C_OFPlayer::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 {
-	m_PlayerAnimState->DoAnimationEvent( event, nData );
+	if (IsLocalPlayer() && !prediction->IsFirstTimePredicted() && cl_predict->GetBool()) return;
+
+	MDLCACHE_CRITICAL_SECTION();
+	m_PlayerAnimState->DoAnimationEvent(event, nData);
 }
 
 C_OFWeaponBase 	*C_OFPlayer::GetActiveOFWeapon(void) const
@@ -125,6 +150,16 @@ C_OFWeaponBase 	*C_OFPlayer::GetActiveOFWeapon(void) const
 C_OFPlayer* C_OFPlayer::GetLocalOFPlayer()
 {
 	return ToOFPlayer(BaseClass::GetLocalPlayer());
+}
+
+const QAngle &C_OFPlayer::EyeAngles()
+{
+	if (IsLocalPlayer() && g_nKillCamMode == OBS_MODE_NONE)
+	{
+		return BaseClass::EyeAngles();
+	}
+
+	return m_angEyeAngles;
 }
 
 extern ConVar friendlyfire;
@@ -304,4 +339,19 @@ void C_OFPlayer::OnDataChanged(DataUpdateType_t updateType)
 			}
 		}
 	}
+}
+
+void C_OFPlayer::UpdateClientSideAnimation()
+{
+	if (GetLocalOFPlayer() == this)
+	{
+		QAngle angle = EyeAngles();
+		m_PlayerAnimState->Update(angle[YAW], angle[PITCH]);
+	}
+	else
+	{
+		m_PlayerAnimState->Update(m_angEyeAngles[YAW], m_angEyeAngles[PITCH]);
+	}
+
+	BaseClass::UpdateClientSideAnimation();
 }

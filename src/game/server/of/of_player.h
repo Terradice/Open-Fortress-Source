@@ -60,6 +60,8 @@ public:
 	CBaseEntity *EntSelectSpawnPoint();
 	bool SelectSpawnSpotByType(char * type, CBaseEntity* &param_2);
 	
+	void PostThink();
+
 	COFWeaponBase 	*GetActiveOFWeapon( void ) const;
 	bool			ShouldAutoReload(){ return false; };
 	
@@ -104,6 +106,8 @@ private:
 	COFPlayerAnimState *m_PlayerAnimState;
 	//OFPlayerState	m_iPlayerState;
 	CNetworkHandle(COFItem, m_hItem);
+	CNetworkQAngle(m_angEyeAngles);
+	float m_fTauntKillTime; //field_0x1fa4
 
 public:
 

@@ -16,6 +16,27 @@
 	#include "of_player.h"
 #endif
 
+COFPlayerAnimState* CreatePlayerAnimState(COFPlayer *pPlayer)
+{
+	MDLCACHE_CRITICAL_SECTION();
+
+	MultiPlayerMovementData_t movementData;
+	movementData.m_flBodyYawRate = 720.0;
+	movementData.m_flRunSpeed = 320.0;
+	movementData.m_flWalkSpeed = 75.0;
+	movementData.m_flSprintSpeed = -1.0;
+	//0x44340000 = 720.0
+	//0x43a00000 = 320.0
+	//0x42960000 = 75.0
+	//0xbf800000 = -1.0
+
+	COFPlayerAnimState *pPlayerAnim = new COFPlayerAnimState(pPlayer, movementData);
+
+	//lots of variables here
+	pPlayerAnim->InitOF(pPlayer);
+
+	return pPlayerAnim;
+}
 
 COFPlayerAnimState::COFPlayerAnimState()
 {
@@ -27,7 +48,7 @@ COFPlayerAnimState::COFPlayerAnimState(CBasePlayer *pPlayer, MultiPlayerMovement
 
 }
 
-void COFPlayerAnimState::Init(COFPlayer *pPlayer)
+void COFPlayerAnimState::InitOF(COFPlayer *pPlayer)
 {
 	m_pOFPlayer = pPlayer;
 	m_bInAirWalk = false; // field_0xf8
@@ -318,27 +339,4 @@ void COFPlayerAnimState::RestartGesture(int iGesture, Activity iGestureActivity,
 {
 	Activity activity = TranslateActivity(iGestureActivity);
 	BaseClass::RestartGesture(iGesture, activity, bAutoKill);
-}
-
-// OFSTATUS: INCOMPLETE
-COFPlayerAnimState* CreatePlayerAnimState(COFPlayer *pPlayer)
-{
-	MDLCACHE_CRITICAL_SECTION();
-
-	MultiPlayerMovementData_t movementData;
-	movementData.m_flBodyYawRate = 720.0;
-	movementData.m_flRunSpeed = 320.0;
-	movementData.m_flWalkSpeed = 75.0;
-	movementData.m_flSprintSpeed = -1.0;
-	//0x44340000 = 720.0
-	//0x43a00000 = 320.0
-	//0x42960000 = 75.0
-	//0xbf800000 = -1.0
-
-	COFPlayerAnimState *pPlayerAnim = new COFPlayerAnimState(pPlayer, movementData);
-
-	//lots of variables here
-	pPlayerAnim->Init(pPlayer);
-
-	return pPlayerAnim;
 }
