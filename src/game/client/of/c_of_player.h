@@ -23,9 +23,13 @@ public:
 
 	C_OFPlayer();
 	void DoAnimationEvent( PlayerAnimEvent_t event, int nData = 0 );
-	C_OFWeaponBase 	*GetActiveOFWeapon( void ) const;
+	C_OFWeaponBase *GetActiveOFWeapon() const;
+	C_OFWeaponBase *Weapon_OwnsThisID(int param_1) const;
 
 	bool ShouldAutoReload(){ return false; };
+
+	void SetOffHandWeapon(C_OFWeaponBase *pWeapon);
+	void HolsterOffHandWeapon();
 
 	static C_OFPlayer* GetLocalOFPlayer();
 	const QAngle &C_OFPlayer::EyeAngles();
@@ -41,25 +45,36 @@ public:
 		float x,	// spread x factor
 		float y	// spread y factor
 		);
+
 	void OnPreDataChanged(DataUpdateType_t updateType);
 	void OnDataChanged(DataUpdateType_t updateType);
+
+	void ValidateModelIndex();
+	void OnPlayerClassChange();
 	void UpdateClientSideAnimation();
+	const QAngle &GetRenderAngles();
 
 	COFPlayerAnimState *m_PlayerAnimState;
 
 	COFPlayerShared m_Shared;
 	friend class COFPlayerShared;
 
-	virtual float GetCritMult() { return m_Shared.GetCritMult(); };
-	virtual void SetItem(COFItem *pItem);
-	virtual bool HasItem() const;
-	virtual COFItem *GetItem() const;
+	float GetCritMult() { return m_Shared.GetCritMult(); };
+	void SetItem(COFItem *pItem);
+	bool HasItem() const;
+	COFItem *GetItem() const;
+	void SetSpeedOF();
+	Vector &GetClassEyeHeight();
+	void RemoveDisguise();
+	void SetAnimation(PLAYER_ANIM playerAnim);
 
 public:
 	CNetworkVarEmbedded( COFPlayerClassShared, m_Class );
 private:
 	CNetworkHandle(COFItem, m_hItem);
+	CNetworkHandle(C_OFWeaponBase, m_hOffHandWeapon);
 	int m_iPreDataChangeTeam;
+	int m_iPreDataChangeClass;
 	QAngle m_angEyeAngles;
 	CInterpolatedVar< QAngle > m_iv_angEyeAngles;
 };

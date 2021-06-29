@@ -65,7 +65,7 @@ public:
 	void InputDisable(inputdata_t &inputdata);
 	void InputSetReturnTime(inputdata_t &inputdata);
 #endif
-	void Drop(COFPlayer *pPlayer, bool bNoDraw, bool param_3, bool param_4);
+	void Drop(COFPlayer *pPlayer, bool bNoDraw, bool param_3 = false, bool param_4 = true);
 	int GetFlagType() { return m_nType; };
 private:
 

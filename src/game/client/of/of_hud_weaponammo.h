@@ -24,7 +24,7 @@ public:
 
 private:
 
-	COFWeaponBase *field_0x1b0;
+	CBaseCombatWeapon *field_0x1b0;
 
 	int field_0x1b4;
 	int field_0x1d8;

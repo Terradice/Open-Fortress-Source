@@ -126,6 +126,16 @@ END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA( C_OFPlayer )
 	DEFINE_PRED_TYPEDESCRIPTION(m_Shared, COFPlayerShared),
+	DEFINE_PRED_FIELD(m_nSkin, FIELD_INTEGER, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_nBody, FIELD_INTEGER, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_nSequence, FIELD_INTEGER, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_flPlaybackRate, FIELD_FLOAT, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_flCycle, FIELD_FLOAT, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_flPlaybackRate, FIELD_FLOAT, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_ARRAY_TOL(m_flEncodedController, FIELD_FLOAT, MAXSTUDIOBONECTRLS, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK, 0.02f),
+	DEFINE_PRED_FIELD(m_nNewSequenceParity, FIELD_INTEGER, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_nResetEventsParity, FIELD_INTEGER, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
+	DEFINE_PRED_FIELD(m_nMuzzleFlashParity, FIELD_CHARACTER, FTYPEDESC_OVERRIDE | FTYPEDESC_PRIVATE | FTYPEDESC_NOERRORCHECK),
 END_PREDICTION_DATA()
 
 C_OFPlayer::C_OFPlayer() : m_iv_angEyeAngles("C_OFPlayer::m_iv_angEyeAngles")
@@ -140,11 +150,6 @@ void C_OFPlayer::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 
 	MDLCACHE_CRITICAL_SECTION();
 	m_PlayerAnimState->DoAnimationEvent(event, nData);
-}
-
-C_OFWeaponBase 	*C_OFPlayer::GetActiveOFWeapon(void) const
-{
-	return dynamic_cast<C_OFWeaponBase*> (GetActiveWeapon());
 }
 
 C_OFPlayer* C_OFPlayer::GetLocalOFPlayer()
@@ -310,8 +315,9 @@ void C_OFPlayer::OnPreDataChanged(DataUpdateType_t updateType)
 {
 	BaseClass::OnPreDataChanged(updateType);
 
-	int iTeam = GetTeamNumber();
-	m_iPreDataChangeTeam = iTeam; // 0x2068
+	m_iPreDataChangeClass = m_Class.m_iClass;
+
+	m_iPreDataChangeTeam = GetTeamNumber(); // 0x2068
 }
 
 // OFSTATUS: VERY INCOMPLETE
@@ -319,6 +325,37 @@ void C_OFPlayer::OnDataChanged(DataUpdateType_t updateType)
 {
 	SetNetworkAngles(GetLocalAngles());
 	BaseClass::OnDataChanged(updateType);
+
+	if (updateType == DATA_UPDATE_CREATED)
+	{
+		SetNextClientThink(CLIENT_THINK_ALWAYS);
+		//InitInvulnerableMaterial();
+	}
+	else
+	{
+		if ((m_iPreDataChangeTeam != GetTeamNumber()))// || field_0x2070 != m_Shared.GetDisguiseTeam()) // field_0x2070 = m_iPreDataChangeDisguise?
+		{
+			//InitInvulnerableMaterial();
+		}
+
+		/* This is for that unused dispenser disguise condition
+		iVar21 = this->field_0x2074;
+		iVar11 = 9;
+		cVar6 = CTFPlayerShared::InCond((CTFPlayerShared *)&this->field_0x17cc, 0x31);
+		if (cVar6 == '\0') {
+			iVar11 = this->field_0x18d0;
+		}
+		if (iVar21 != iVar11) {
+			C_BaseEntity::RemoveAllDecals((C_BaseEntity *)this);
+		}
+		*/
+	}
+
+	// line 188
+	if (m_iPreDataChangeClass != m_Class.m_iClass)
+	{
+		OnPlayerClassChange();
+	}
 
 	// line 340
 	if (IsLocalPlayer())
@@ -341,6 +378,51 @@ void C_OFPlayer::OnDataChanged(DataUpdateType_t updateType)
 	}
 }
 
+void C_OFPlayer::ValidateModelIndex()
+{
+	// that dispenser diguise again..
+
+	// OFTODO: CONDITIONSSS
+	//if (m_Shared.InCond(TF_COND_DISGUISED) && IsEnemyPlayer())
+	//{
+	//	m_nModelIndex = modelinfo->GetModelIndex(GetPlayerClassData(m_Shared.m_nDisguiseClass)->GetModelName()); //field_0x18d0 = m_nDisguiseClass
+	//}
+	//else
+	//{
+		m_nModelIndex = modelinfo->GetModelIndex(GetPlayerClassData(m_Class.m_iClass)->GetModelName());
+	//}
+	/*
+	if (field_0x2088 > -1 && GetModelPtr())
+	{
+		if (m_Shared.InCond(TF_COND_DISGUISED) && !IsEnemyPlayer())
+		{
+			SetBodygroup(field_0x2088, true);
+		}
+		else
+		{
+			SetBodygroup(field_0x2088, false);
+		}
+	}
+	*/
+
+	BaseClass::ValidateModelIndex();
+}
+
+void C_OFPlayer::OnPlayerClassChange()
+{
+	m_PlayerAnimState->SetRunSpeed(GetPlayerClassData(m_Class.m_iClass)->m_flMaxSpeed);
+	m_PlayerAnimState->SetWalkSpeed(GetPlayerClassData(m_Class.m_iClass)->m_flMaxSpeed * 0.5);
+
+	//RemoveOverheadEffect("particle_nemesis_red", true);
+	//RemoveOverheadEffect("particle_nemesis_blue", true);
+	//*(undefined *)&this->field_0x1c24 = 0;
+	//RemoveOverheadEffect("duel_red", true);
+	//RemoveOverheadEffect("duel_blue", true);
+	//*(undefined *)((int)&this->field_0x1c24 + 1) = 0;
+
+	//SetAppropriateCamera();
+}
+
 void C_OFPlayer::UpdateClientSideAnimation()
 {
 	if (GetLocalOFPlayer() == this)
@@ -354,4 +436,16 @@ void C_OFPlayer::UpdateClientSideAnimation()
 	}
 
 	BaseClass::UpdateClientSideAnimation();
+}
+
+const QAngle &C_OFPlayer::GetRenderAngles()
+{
+	if (IsRagdoll())
+	{
+		return vec3_angle;
+	}
+	else
+	{
+		return m_PlayerAnimState->GetRenderAngles();
+	}
 }

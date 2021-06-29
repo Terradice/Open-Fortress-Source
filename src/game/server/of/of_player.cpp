@@ -7,7 +7,7 @@
 // (Many functions are copied from sdk_player.cpp. Please mark any that match tf2 server.dylib)
 
 #include "cbase.h"
-#include "of_shareddefs.h"
+#include "of_flag.h"
 #include "of_player.h"
 #include "datacache/imdlcache.h"
 #include "of_player_shared.h"
@@ -117,6 +117,20 @@ BEGIN_SEND_TABLE_NOBASE(COFPlayer, DT_OFNonLocalPlayerExclusive)
 END_SEND_TABLE()
 
 IMPLEMENT_SERVERCLASS_ST(COFPlayer, DT_OF_Player)
+	SendPropExclude("DT_BaseAnimating","m_flPoseParameter"),
+	SendPropExclude("DT_BaseAnimating", "m_flPlaybackRate"),
+	SendPropExclude("DT_BaseAnimating", "m_nSequence"),
+	SendPropExclude("DT_BaseAnimating", "m_nBody"),
+	SendPropExclude("DT_BaseEntity", "m_angRotation"),
+	SendPropExclude("DT_BaseAnimatingOverlay","overlay_vars"),
+	SendPropExclude("DT_BaseEntity","m_nModelIndex"),
+	SendPropExclude("DT_BaseEntity", "m_vecOrigin"),
+	SendPropExclude("DT_ServerAnimationData", "m_flCycle"),
+	SendPropExclude("DT_AnimTimeMustBeFirst", "m_flAnimTime"),
+	SendPropExclude("DT_BaseFlex", "m_flexWeight"),
+	SendPropExclude("DT_BaseFlex", "m_blinktoggle"),
+	SendPropExclude("DT_BaseFlex", "m_viewtarget "),
+
 	SendPropDataTable(SENDINFO_DT(m_Class), &REFERENCE_SEND_TABLE(DT_OFPlayerClassShared)),
 	SendPropDataTable("oflocaldata", 0, &REFERENCE_SEND_TABLE(DT_OFLocalPlayerExclusive), SendProxy_SendLocalDataTable),
 	SendPropDataTable("ofnonlocaldata", 0, &REFERENCE_SEND_TABLE(DT_OFNonLocalPlayerExclusive), SendProxy_SendNonLocalDataTable),
@@ -271,6 +285,10 @@ void COFPlayer::Spawn()
 
 		DoAnimationEvent(PLAYERANIMEVENT_SPAWN);
 	}
+
+	ClearZoomOwner();
+	SetFOV(this, 0);
+	SetViewOffset(GetClassEyeHeight());
 }
 
 void COFPlayer::PostThink()
@@ -315,7 +333,7 @@ void COFPlayer::InitClass()
 	SetMaxHealth( GetMaxHealth() );
 	SetHealth( GetMaxHealth() );
 
-	// TeamFortress_SetSpeed();
+	SetSpeedOF(); // TeamFortress_SetSpeed();
 }
 
 void COFPlayer::GiveDefaultItems()
@@ -1139,6 +1157,29 @@ void COFPlayer::ChangeTeam(int iTeam)
 	*/
 }
 
+void COFPlayer::DropFlag(bool param_1)
+{
+	if (HasItem() && GetItem())
+	{
+		CCaptureFlag *pFlag = dynamic_cast<CCaptureFlag*>(GetItem());
+
+		if (pFlag)
+		{
+			pFlag->Drop(this, true, true, param_1);
+
+			IGameEvent *pEvent = gameeventmanager->CreateEvent("teamplay_flag_event");
+			if (pEvent)
+			{
+				pEvent->SetInt("player", entindex());
+				pEvent->SetInt("eventtype", 4);
+				pEvent->SetInt("priority", 8);
+				pEvent->SetInt("team", pFlag->GetTeamNumber());
+				gameeventmanager->FireEvent(pEvent);
+			}
+		}
+	}
+}
+
 // OFSTATUS: INCOMPLETE
 // removed cond checks if your in hell
 void COFPlayer::CommitSuicide(bool bExplode, bool bForce)
@@ -1279,11 +1320,6 @@ void COFPlayer::UpdateModel()
 	BaseClass::SetModel( m_Class.GetModelName() ); //TEMPORARY FOR TESTING ONLY
 	SetCollisionBounds( BaseClass::GetPlayerMins(), BaseClass::GetPlayerMaxs() );
     //m_PlayerAnimState->OnNewModel(); //Crashes so disabled for now
-}
-
-COFWeaponBase *COFPlayer::GetActiveOFWeapon(void) const
-{
-	return dynamic_cast< COFWeaponBase* >(GetActiveWeapon());
 }
 
 extern ConVar friendlyfire;

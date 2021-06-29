@@ -977,7 +977,7 @@ void CCaptureFlag::Drop(COFPlayer *pPlayer, bool bNoDraw, bool param_3, bool par
 {
 	if (m_bDisabled) return;
 
-	BaseClass::Drop(pPlayer, bNoDraw, false, true);
+	BaseClass::Drop(pPlayer, bNoDraw);
 	//pPlayer->TeamFortress_SetSpeed();
 
 	#ifdef GAME_DLL

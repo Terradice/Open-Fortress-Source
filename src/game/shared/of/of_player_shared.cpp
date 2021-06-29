@@ -244,3 +244,122 @@ COFItem *COFPlayer::GetItem() const
 {
 	return m_hItem;
 }
+
+COFWeaponBase *COFPlayer::GetActiveOFWeapon() const
+{
+	return dynamic_cast< COFWeaponBase* >(GetActiveWeapon());
+}
+
+COFWeaponBase *COFPlayer::Weapon_OwnsThisID(int iWeaponID) const
+{
+	for (int i = 0; i < MAX_WEAPONS; i++)
+	{
+		COFWeaponBase* pWeapon = dynamic_cast<COFWeaponBase*>(GetWeapon(i));
+		if (pWeapon && pWeapon->GetWeaponID() == iWeaponID)
+		{
+			return pWeapon;
+		}
+	}
+	
+	return NULL;
+}
+
+void COFPlayer::SetOffHandWeapon(COFWeaponBase *pWeapon)
+{
+	m_hOffHandWeapon = pWeapon; // Server: 0x20c8, Client: 0x1c0c
+
+	if (m_hOffHandWeapon)
+	{
+		m_hOffHandWeapon->Deploy();
+	}
+}
+
+void COFPlayer::HolsterOffHandWeapon()
+{
+	if (m_hOffHandWeapon)
+	{
+		m_hOffHandWeapon->Holster(NULL);
+	}
+}
+
+// this is called "TeamFortress_SetSpeed" but cmon, who wants to type all that out
+// filled with conditions, attributes, and my guess econ weapons, also passtime
+// ive placed "TeamFortress_CalculateMaxSpeed in here as everything else in TeamFortress_SetSpeed is the above
+void COFPlayer::SetSpeedOF()
+{
+	float flMaxSpeed = 0.0;
+
+	// this will never happen as the game will just crash before this can even execute
+	//if (!OFGameRules()) SetMaxSpeed(0.0);
+
+	// field_0xb0c = m_afPhysicsFlags
+	if (IsObserver())
+	{
+		if (GetObserverMode() == OBS_MODE_ROAMING)
+		{
+			SetMaxSpeed(GetPlayerClassData(OF_CLASS_SCOUT)->m_flMaxSpeed);
+		}
+
+		SetMaxSpeed(flMaxSpeed);
+		return;
+	}
+
+	// CanPlayerMove is filled with matchmaking
+	// instead just check if we've restarted the round, if so, ya get frozen
+	if (m_Class.m_iClass == OF_CLASS_UNDEFINED || OFGameRules()->InRoundRestart())
+	{
+		SetMaxSpeed(1.0);
+		return;
+	}
+
+	flMaxSpeed = GetPlayerClassData(m_Class.m_iClass)->m_flMaxSpeed;
+
+	// OFTODO: conditions + spy disguising
+	/*
+	if (m_Shared.InCond(TF_COND_DISGUISED) && !m_Shared.InCond(TF_COND_STEALTHED))
+	{
+		flMaxSpeed = GetPlayerClassData(m_nDisguiseClass)->m_flMaxSpeed; // 0x1abc - 6584 = 260 = m_nDisguiseClass
+	}
+
+	// mvm checks here, heck you
+	if (m_Shared.InCond(TF_COND_AIMING))
+	{
+		int iClass = (m_Class.m_iClass);
+
+		switch (iClass)
+		{
+		// minigun aiming/firing
+		case OF_CLASS_HEAVY:
+			flMaxSpeed = 110.0;
+			break;
+		// sniper rifle scope
+		case OF_CLASS_SNIPER:
+			flMaxSpeed = 80.0;
+			break;
+		}
+	}
+	*/
+
+	SetMaxSpeed(flMaxSpeed);
+}
+
+// why is g_TFClassViewVectors hardcoded along a vector? and when only the z would be the only thing you'd be changing????
+// instead ill add it to the class data
+Vector &COFPlayer::GetClassEyeHeight()
+{
+	int iHeight = GetPlayerClassData(m_Class.m_iClass)->m_iEyeHeight;
+	return Vector(0, 0, iHeight);
+}
+
+void COFPlayer::RemoveDisguise()
+{
+	//if (m_Shared.InCond(TF_COND_DISGUISING) || m_Shared.InCond(TF_COND_DISGUISED))
+	//{
+	//	m_Shared.RemoveDisguise();
+	//}
+}
+
+// empty on purpose
+void COFPlayer::SetAnimation(PLAYER_ANIM playerAnim)
+{
+}

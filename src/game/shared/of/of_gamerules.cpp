@@ -831,8 +831,7 @@ void COFGameRules::SetupOnRoundRunning()
 		COFPlayer *pPlayer = ToOFPlayer(UTIL_PlayerByIndex(i));
 		if (pPlayer)
 		{
-			// OFTODO: rename to OFSetSpeed.. cus thats just weird name
-			//pPlayer->TeamFortress_SetSpeed();
+			pPlayer->SetSpeedOF(); // TeamFortress_SetSpeed();
 			// there was a bunch of weird checks going on here on hallowen and steam id stuff, so ignoring all that its just this:
 			pPlayer->SpeakConceptIfAllowed(MP_CONCEPT_ROUND_START);
 		}

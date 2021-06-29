@@ -62,9 +62,14 @@ public:
 	
 	void PostThink();
 
-	COFWeaponBase 	*GetActiveOFWeapon( void ) const;
-	bool			ShouldAutoReload(){ return false; };
+	COFWeaponBase *GetActiveOFWeapon() const;
+	COFWeaponBase *Weapon_OwnsThisID(int param_1) const;
+
+	bool ShouldAutoReload(){ return false; };
 	
+	void SetOffHandWeapon(COFWeaponBase *pWeapon);
+	void HolsterOffHandWeapon();
+
 	virtual void FireBullet( 
 						   Vector vecSrc,	// shooting postion
 						   const QAngle &shootAngles,  //shooting angle
@@ -90,22 +95,28 @@ public:
 	friend class COFPlayerShared;
 	friend class COFPlayerClassShared;
 
-	virtual float GetCritMult() { return m_Shared.GetCritMult(); };
-	virtual void SetItem(COFItem *pItem);
-	virtual bool HasItem() const;
-	virtual COFItem *GetItem() const;
+	float GetCritMult() { return m_Shared.GetCritMult(); };
+	void SetItem(COFItem *pItem);
+	bool HasItem() const;
+	COFItem *GetItem() const;
+	void SetSpeedOF();
+	Vector &GetClassEyeHeight();
+	void RemoveDisguise();
+	void DropFlag(bool param_1);
 	COFTeam *GetOFTeam() { return (COFTeam*)(GetTeam()); };
 	int GetAutoTeam();
 	void CommitSuicide(bool bExplode, bool bForce);
 	void GiveDefaultItems();
 	void ManageRegularWeapons(OFPlayerClassData_t *pClassData);
 	void RemoveAllWeapons();
+	void SetAnimation(PLAYER_ANIM playerAnim);
 
 private:
 
 	COFPlayerAnimState *m_PlayerAnimState;
 	//OFPlayerState	m_iPlayerState;
 	CNetworkHandle(COFItem, m_hItem);
+	CNetworkHandle(COFWeaponBase, m_hOffHandWeapon);
 	CNetworkQAngle(m_angEyeAngles);
 	float m_fTauntKillTime; //field_0x1fa4
 

@@ -52,6 +52,7 @@ void COFPlayerAnimState::InitOF(COFPlayer *pPlayer)
 {
 	m_pOFPlayer = pPlayer;
 	m_bInAirWalk = false; // field_0xf8
+	field_0xfc = 0.0;
 }
 
 // decomp is littered with halloween, item test, and more junk
@@ -100,6 +101,12 @@ void COFPlayerAnimState::Update(float eyeYaw, float eyePitch)
 		GetBasePlayer()->SetPlaybackRate(1.0f);
 	}
 #endif
+}
+
+void COFPlayerAnimState::CleanAnimationState()
+{
+	m_bInAirWalk = false;
+	BaseClass::ClearAnimationState();
 }
 
 // Note: ghidra wasnt able to recover the switch statement so i did my
@@ -339,4 +346,42 @@ void COFPlayerAnimState::RestartGesture(int iGesture, Activity iGestureActivity,
 {
 	Activity activity = TranslateActivity(iGestureActivity);
 	BaseClass::RestartGesture(iGesture, activity, bAutoKill);
+}
+
+bool COFPlayerAnimState::HandleMoving(Activity &idealActivity)
+{
+	float flSpeed = GetOuterXYSpeed();
+	if (MOVING_MINIMUM_SPEED < flSpeed)
+	{
+		field_0xfc = 0.0;
+	}
+
+	//if (m_pOFPlayer->m_Shared.IsLoser())
+	//{
+	//	return BaseClass::HandleMoving(idealActivity);
+	//}
+
+	// OFTODO: conditions :v
+	//if (m_pOFPlayer->m_Shared.IsAiming())
+	if (false)
+	{
+		if (MOVING_MINIMUM_SPEED < flSpeed)
+		{
+			idealActivity = ACT_MP_DEPLOYED;
+		}
+		else
+		{
+			idealActivity = ACT_MP_DEPLOYED_IDLE;
+		}
+	}
+	else if (gpGlobals->curtime < field_0xfc)
+	{
+		idealActivity = ACT_MP_DEPLOYED_IDLE;
+	}
+	else
+	{
+		return BaseClass::HandleMoving(idealActivity);
+	}
+
+	return true;
 }

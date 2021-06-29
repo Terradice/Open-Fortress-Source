@@ -130,7 +130,7 @@ void COFHudWeaponAmmo::ShowLowAmmoIndicator()
 void COFHudWeaponAmmo::OnThink()
 {
 	COFPlayer *pPlayer = COFPlayer::GetLocalOFPlayer();
-	COFWeaponBase *pWeapon = pPlayer->GetActiveOFWeapon();
+	CBaseCombatWeapon *pWeapon = GetActiveWeapon();
 
 	if (gpGlobals->curtime <= m_flNextThinkTime) return;
 

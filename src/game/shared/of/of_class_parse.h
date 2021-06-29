@@ -30,6 +30,7 @@ struct  OFPlayerClassData_t
 	float			m_flCameraOffsetForward;
 	float			m_flCameraOffsetRight;
 	float			m_flCameraOffsetUp;
+	int				m_iEyeHeight;
 	char			m_szDeathSounds[12][128];
 	
 	void	AddAdditionalPlayerDeathSounds( void );

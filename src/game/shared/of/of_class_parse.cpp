@@ -63,6 +63,8 @@ void OFPlayerClassData_t::ParseData( KeyValues *kvData )
 	m_flCameraOffsetRight = kvData->GetFloat( "cameraoffset_right" );
 	m_flCameraOffsetUp = kvData->GetFloat( "cameraoffset_up" );
 	
+	m_iEyeHeight = kvData->GetInt( "eyeheight" );
+
 	V_strncpy( m_szDeathSounds[0], kvData->GetString( "sound_death", "Player.Death" ), 
 	sizeof(m_szDeathSounds[0]) );
 	
