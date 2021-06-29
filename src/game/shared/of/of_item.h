@@ -27,7 +27,7 @@ public:
 	virtual int GetItemID() const;
 
 	virtual void Pickup(COFPlayer *pPlayer, bool bNoDraw);
-	virtual void Drop(COFPlayer *pPlayer, bool bNoDraw, bool param_3, bool param_4);
+	virtual void Drop(COFPlayer *pPlayer, bool bNoDraw, bool param_3 = false, bool param_4 = true);
 
 	#ifdef CLIENT_DLL
 
