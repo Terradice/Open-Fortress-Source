@@ -113,5 +113,5 @@ protected:
 	CNetworkVar( bool, m_bCustomModelClassAnim );
 
 	friend class COFPlayer;
-	friend class C_OFPlayer;
+	//friend class C_OFPlayer;
 };

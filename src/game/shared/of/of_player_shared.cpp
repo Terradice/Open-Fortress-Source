@@ -347,8 +347,8 @@ void COFPlayer::SetSpeedOF()
 // instead ill add it to the class data
 Vector &COFPlayer::GetClassEyeHeight()
 {
-	int iHeight = GetPlayerClassData(m_Class.m_iClass)->m_iEyeHeight;
-	return Vector(0, 0, iHeight);
+	Vector vecClassHeight = Vector(0.0, 0.0, GetPlayerClassData(m_Class.m_iClass)->m_iEyeHeight);
+	return vecClassHeight;
 }
 
 void COFPlayer::RemoveDisguise()
