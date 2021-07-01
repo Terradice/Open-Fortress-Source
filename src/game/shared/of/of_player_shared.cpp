@@ -347,7 +347,7 @@ void COFPlayer::SetSpeedOF()
 // instead ill add it to the class data
 Vector &COFPlayer::GetClassEyeHeight()
 {
-	Vector vecClassHeight = Vector(0.0, 0.0, GetPlayerClassData(m_Class.m_iClass)->m_iEyeHeight);
+	static Vector vecClassHeight = Vector(0.0, 0.0, GetPlayerClassData(m_Class.m_iClass)->m_iEyeHeight);
 	return vecClassHeight;
 }
 
