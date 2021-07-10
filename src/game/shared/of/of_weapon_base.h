@@ -388,7 +388,7 @@ public:
 	CNetworkVar(bool, m_bLoweredWeapon);
 	CNetworkVar( bool, m_bAnimReload );
 	CNetworkVar(float, m_flOldPrimaryAttack);
-private:
+protected:
 	CNetworkVar( bool, m_bInAttack );
 	CNetworkVar( bool, m_bInAttack2 );
 	CNetworkVar( float, m_flEnergy );

@@ -25,50 +25,52 @@ class COFWeaponBaseGun: public COFWeaponBase
 
     COFWeaponBaseGun();
 	~COFWeaponBaseGun();
-/*
-	virtual bool CanBeSelected();
-	virtual bool HasPrimaryAmmo();
-	virtual bool CanDeploy();
-	virtual bool Holster();
-	*/
+
+	//virtual bool CanBeSelected();
+	//virtual bool HasPrimaryAmmo();
+	//virtual bool CanDeploy();
+	virtual bool Holster(CBaseCombatWeapon *pSwitchingTo);
+
 	virtual void PrimaryAttack();
-/*	virtual void SecondaryAttack();
+	virtual void SecondaryAttack();
 	
 	// What is this used for??
 	// Re: Apparently there's a "last_shot_crits" attribute, dont think anything uses it - Kay
-	virtual bool HasLastShotCritical();
-	*/
+	//virtual bool HasLastShotCritical();
+	
 	virtual void DoFireEffects();
 
 	// OFTODO: Placeholder for now, look into what makes this be false sometimes
 	virtual bool ShouldDoMuzzleFlash() { return true; };
-	/*
+
 	virtual int GetWeaponProjectileType() const;
-	*/
+
 	virtual CBaseEntity *FireProjectile( COFPlayer *pPlayer );
 	/*
 	virtual void RemoveProjectileAmmo( CTFPlayer *pPlayer );
 	virtual void ModifyProjectile( CBaseEntity *pEnt );
 	*/
 	virtual void FireBullet( COFPlayer *pPlayer );
-	/*
-	// OFTODO: Figure out what the types are
-	virtual void FirePipeBomb( CTFPlayer *pPlayer, int iType );
-	// OFTODO: Ditto
-	virtual void FireArrow( CTFPlayer *pPlayer, int ProjectileType_t );
 	
-	virtual void FireJar( CTFPlayer *pPlayer );
-	virtual void FireFlameRocket( CTFPlayer *pPlayer );
+	// OFTODO: Figure out what the types are
+	virtual CBaseEntity *FirePipeBomb(COFPlayer *pPlayer, int iType);
+	virtual CBaseEntity *FireRocket(COFPlayer *pPlayer, int iType);
+	// OFTODO: Ditto
+	//virtual void FireArrow( CTFPlayer *pPlayer, int ProjectileType_t );
+	
+	//virtual void FireJar( CTFPlayer *pPlayer );
+	//virtual void FireFlameRocket( CTFPlayer *pPlayer );
 	// OFTODO: Figure out what the magic bool does
-	virtual void FireEnergyBall( CTFPlayer *pPlayer, bool bMagic );
-	*/
+	//virtual void FireEnergyBall( CTFPlayer *pPlayer, bool bMagic );
+	
 	virtual float GetWeaponSpread();
-	/*
-	virtual char GetCustomProjectileModel( CAttribute_String *szParam );
+
+	// virtual char GetCustomProjectileModel( CAttribute_String *szParam ); // IGNORE, ECON HELL - cherry
+
 	virtual float GetProjectileSpeed();
 	virtual float GetProjectileGravity();
-	virtual float GetProjectileSpread();
-	*/
+	//virtual float GetProjectileSpread();
+	
 	virtual int GetAmmoPerShot();
 	virtual int GetProjectileDamage();
 	

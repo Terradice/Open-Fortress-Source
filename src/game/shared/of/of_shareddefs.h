@@ -50,6 +50,8 @@ enum OF_Collision_Group_t
 #define OF_PLAYER_GRENADE_COUNT 6
 #define OF_PLAYER_BUILDABLE_COUNT 6
 
+#define SF_STICKY_MAY_NOT_STICK 1<<10 // makes stickys not stick!
+
 enum OFPlayerState
 {
 	TF_STATE_ACTIVE,
@@ -96,6 +98,13 @@ enum
 	OF_AMMO_GRENADES2,
 	OF_AMMO_GRENADES3,
 	OF_AMMO_COUNT
+};
+
+// only these two values should exist as the others are probably econ related
+enum
+{
+	OF_GRENADELAUNCHERTYPE_PIPE = 0,
+	OF_GRENADELAUNCHERTYPE_STICKY,
 };
 
 // These values are approximate and gotten via limited testing
@@ -371,7 +380,7 @@ extern const char *GetAmmoName( int iAmmoIndex );
 
 // Weapon Defines
 extern const char *g_aWeaponModePrefix[OF_WEAPON_MODE_COUNT];
-extern uint g_aWeaponDamageTypes[];
+extern int g_aWeaponDamageTypes[];
 extern const char *g_aProjectileTypeNames[OF_PROJECTILE_TYPE_COUNT];
 
 //OFHACK: g_aAmmoNames should probably be an extern + defined somewhere but isn't

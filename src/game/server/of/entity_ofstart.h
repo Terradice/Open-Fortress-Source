@@ -28,7 +28,7 @@ public:
 	CHandle<CTeamControlPointRound> GetBlueControlPoint() { return m_hControlPointBlue; }
 	CHandle<CTeamControlPointRound> GetRedControlPoint() { return m_hControlPointRed; }
 	bool GetSpawnMode() { return m_nSpawnMode; }
-	void Think();
+	//void Think(); // DEBUGGING
 
 private:
 

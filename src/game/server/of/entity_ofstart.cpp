@@ -8,7 +8,7 @@
 #include "team_control_point_master.h"
 
 // DEBUGGING
-#include "debugoverlay_shared.h"
+//#include "debugoverlay_shared.h"
 
 IMPLEMENT_AUTO_LIST(IOFTeamSpawnAutoList);
 
@@ -33,8 +33,8 @@ COFTeamSpawn::COFTeamSpawn()
 	m_bDisabled = false;
 
 	// DEBUGGING
-	SetThink(&COFTeamSpawn::Think);
-	SetNextThink(gpGlobals->curtime);
+	//SetThink(&COFTeamSpawn::Think);
+	//SetNextThink(gpGlobals->curtime);
 }
 
 void COFTeamSpawn::InputEnable(inputdata_t &inputdata)
@@ -183,6 +183,7 @@ void COFTeamSpawn::Activate()
 }
 
 // DEBUGGING
+/*
 void COFTeamSpawn::Think()
 {
 
@@ -199,3 +200,4 @@ void COFTeamSpawn::Think()
 
 	SetNextThink(gpGlobals->curtime + 0.2);
 }
+*/

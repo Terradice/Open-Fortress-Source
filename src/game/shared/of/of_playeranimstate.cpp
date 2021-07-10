@@ -148,7 +148,7 @@ void COFPlayerAnimState::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 					activity = ACT_MP_ATTACK_CROUCH_PRIMARYFIRE;
 				}
 
-				if (IsGestureSlotPlaying(GESTURE_SLOT_ATTACK_AND_RELOAD, TranslateActivity(activity)))
+				if (!IsGestureSlotPlaying(GESTURE_SLOT_ATTACK_AND_RELOAD, TranslateActivity(activity)))
 				{
 					RestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, activity);
 				}
@@ -165,11 +165,19 @@ void COFPlayerAnimState::DoAnimationEvent( PlayerAnimEvent_t event, int nData )
 					RestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_MP_ATTACK_STAND_PRIMARYFIRE_DEPLOYED);
 				}
 				
+				activity = ACT_VM_PRIMARYATTACK;
 				field_0xfc = gpGlobals->curtime + 2.0;
 			}
 			else
 			{
-				RestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_MP_ATTACK_STAND_PRIMARYFIRE_DEPLOYED);
+				if (GetBasePlayer()->GetFlags() & FL_DUCKING)
+				{
+					RestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_MP_ATTACK_CROUCH_PRIMARYFIRE);
+				}
+				else
+				{
+					RestartGesture(GESTURE_SLOT_ATTACK_AND_RELOAD, ACT_MP_ATTACK_STAND_PRIMARYFIRE);
+				}
 			}
 
 			break;

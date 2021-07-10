@@ -13,7 +13,7 @@ const char *g_aWeaponModePrefix[] =
 	"secondary_", // Primary parse doesnt use any prefixes
 };
 
-uint g_aWeaponDamageTypes[] =
+int g_aWeaponDamageTypes[] =
 {
 	// explanation on how these values were found: https://gist.github.com/CherrySodaPop/f5038de894389d58ebc4ffc1a8bcf5eb - cherry
 
