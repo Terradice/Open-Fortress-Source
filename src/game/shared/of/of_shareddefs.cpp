@@ -80,7 +80,6 @@ int g_aWeaponDamageTypes[] =
 	DMG_GENERIC,							// OF_WEAPON_DISPENSER
 	DMG_GENERIC,							// OF_WEAPON_INVIS
 
-	DMG_GENERIC,							// WEAPON_OFTODO
 	DMG_GENERIC,							// WEAPON_MAX
 };
 

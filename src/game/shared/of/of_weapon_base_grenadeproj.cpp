@@ -13,6 +13,7 @@
 
 #include "Sprite.h"
 #include "soundent.h"
+#include "of_fx.h"
 
 #endif
 
@@ -164,23 +165,22 @@ void COFWeaponBaseGrenadeProj::Explode(trace_t *pTrace, int bitsDamageType)
 	{
 		if (pTrace->m_pEnt && pTrace->m_pEnt->IsPlayer())
 		{
-			//TE_TFExplosion(filter, 0.0, vecOrigin, field_0x510, GetWeaponID(), )
+			TE_OFExplosion(filter, 0.0, vecOrigin, field_0x510, GetWeaponID(), pTrace->m_pEnt->entindex());
 		}
 		else
 		{
-			//TE_TFExplosion(filter, 0.0, vecOrigin, field_0x510, GetWeaponID(), )
+			TE_OFExplosion(filter, 0.0, vecOrigin, field_0x510, GetWeaponID(), OFFX_NULL);
 		}
 	}
 	else
 	{
 		if (pTrace->m_pEnt && pTrace->m_pEnt->IsPlayer())
 		{
-			
+			TE_OFExplosion(filter, 0.0, vecOrigin, pTrace->plane.normal, GetWeaponID(), pTrace->m_pEnt->entindex());
 		}
 		else
 		{
-			//TE_TFExplosion(filter, 0.0, vecOrigin, pTrace->plane.normal, GetWeaponID(), )
-			
+			TE_OFExplosion(filter, 0.0, vecOrigin, pTrace->plane.normal, GetWeaponID(), OFFX_NULL);
 		}
 	}
 

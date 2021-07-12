@@ -88,7 +88,7 @@ void EndGroupingSounds()
 #else
 
 	#include "of_player.h"
-	#include "te_firebullets.h"
+	#include "of_fx.h"
 	
 // Server doesn't play sounds anyway.
 void StartGroupingSounds() {}

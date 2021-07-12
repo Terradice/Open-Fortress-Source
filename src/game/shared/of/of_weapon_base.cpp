@@ -95,7 +95,6 @@ static const char * s_WeaponAliasInfo[] =
 	"tf_weapon_dispenser",				// OF_WEAPON_DISPENSER
 	"tf_weapon_invis",					// OF_WEAPON_INVIS
 
-	NULL,								// WEAPON_OFTODO
 	NULL,								// WEAPON_MAX
 };
 

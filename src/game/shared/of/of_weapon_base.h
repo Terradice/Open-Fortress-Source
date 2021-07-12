@@ -90,7 +90,6 @@ typedef enum
 
 	// everything after the above weapon is econ in ghidra - cherry
 
-    WEAPON_OFTODO,
     WEAPON_MAX,
 } OFWeaponID;
 

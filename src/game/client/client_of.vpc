@@ -51,7 +51,7 @@ $Project "Client (Open Fortress)"
 		$File	"of/of_hud_weaponammo.cpp"
 		$File	"of/of_hud_weaponammo.h"
 		
-		$File	"of/c_te_firebullets.cpp"
+		$File	"of/c_of_fx.cpp"
 
 		$File	"hud_controlpointicons.cpp"
 		$File	"hud_controlpointicons.h"
